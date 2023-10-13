@@ -668,7 +668,7 @@ describe("schema/3.0", () => {
               keyword: "enum",
               instancePath: "/openAttestationMetadata/identityProof/type",
               schemaPath: "#/properties/openAttestationMetadata/properties/identityProof/properties/type/enum",
-              params: { allowedValues: ["DNS-TXT", "DNS-DID", "DID"] },
+              params: { allowedValues: ["DNS-TXT", "DNS-DID", "DID", "IDVC"] },
               message: "must be equal to one of the allowed values",
             },
           ])

@@ -1,6 +1,6 @@
 {
-  "title": "Open Attestation Schema 3.0",
-  "$id": "https://schema.openattestation.com/3.0/schema.json",
+  "title": "TradeTrust Schema 3.0",
+  "$id": "https://schema.tradetrust.io/3.0/schema.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "definitions": {
@@ -190,7 +190,7 @@
           "properties": {
             "type": {
               "type": "string",
-              "enum": ["DNS-TXT", "DNS-DID", "DID"]
+              "enum": ["DNS-TXT", "DNS-DID", "DID", "IDVC"]
             },
             "identifier": {
               "type": "string",

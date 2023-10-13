@@ -25,8 +25,8 @@ export type SignedWrappedDocument<T extends OpenAttestationDocument> = T extends
   : unknown;
 
 export enum SchemaId {
-  v2 = "https://schema.openattestation.com/2.0/schema.json",
-  v3 = "https://schema.openattestation.com/3.0/schema.json",
+  v2 = "https://schema.tradetrust.io/2.0/schema.json",
+  v3 = "https://schema.tradetrust.io/3.0/schema.json",
 }
 
 export const OpenAttestationHexString = String.withConstraint(

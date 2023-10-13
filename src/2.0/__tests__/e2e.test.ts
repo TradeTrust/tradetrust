@@ -162,7 +162,7 @@ describe("2.0 E2E Test Scenarios", () => {
     test("should return true when document is valid and version is 2.0", () => {
       expect(
         validateSchema({
-          version: "https://schema.openattestation.com/2.0/schema.json",
+          version: "https://schema.tradetrust.io/2.0/schema.json",
           data: {
             issuers: [
               {

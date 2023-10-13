@@ -439,7 +439,7 @@ describe("Util Functions", () => {
           "type": [
             "VerifiableCredential",
           ],
-          "version": "https://schema.openattestation.com/3.0/schema.json",
+          "version": "https://schema.tradetrust.io/3.0/schema.json",
         }
       `);
     });

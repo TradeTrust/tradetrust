@@ -1,5 +1,5 @@
 {
-  "version": "https://schema.openattestation.com/3.0/schema.json",
+  "version": "https://schema.tradetrust.io/3.0/schema.json",
   "@context": [
     "https://www.w3.org/2018/credentials/v1",
     "https://schemata.openattestation.com/com/openattestation/1.0/DrivingLicenceCredential.json",
