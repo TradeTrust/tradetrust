@@ -236,8 +236,8 @@ const diagnoseV4 = ({
     }
 
     // 3. Ensure that required types are present
-    // type: ["VerifiableCredential", "OpenAttestationCredential", ...]
-    const types = ["VerifiableCredential", "OpenAttestationCredential"];
+    // type: ["VerifiableCredential", "TradeTrustCredential", ...]
+    const types = ["VerifiableCredential", "TradeTrustCredential"];
     if (isStringArray(document["type"])) {
       for (let i = 0; i < types.length; i++) {
         if (document["type"][i] !== types[i]) {

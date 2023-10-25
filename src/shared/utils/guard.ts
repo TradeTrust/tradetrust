@@ -8,7 +8,7 @@ import {
   WrappedDocument as WrappedDocumentV3,
 } from "../../3.0/types";
 import {
-  OpenAttestationDocument as OpenAttestationDocumentV4,
+  TradeTrustDocument as TradeTrustDocumentV4,
   WrappedDocument as WrappedDocumentV4,
 } from "../../4.0/types";
 import { diagnose } from "./diagnose";
@@ -46,7 +46,7 @@ export const isRawV3Document = (
 export const isRawV4Document = (
   document: any,
   { mode }: { mode: Mode } = { mode: "non-strict" }
-): document is OpenAttestationDocumentV4 => {
+): document is TradeTrustDocumentV4 => {
   return diagnose({ version: "4.0", kind: "raw", document, debug: false, mode }).length === 0;
 };
 
@@ -82,7 +82,7 @@ export const isWrappedV3Document = (
 export const isWrappedV4Document = (
   document: any,
   { mode }: { mode: Mode } = { mode: "non-strict" }
-): document is WrappedDocumentV4<OpenAttestationDocumentV4> => {
+): document is WrappedDocumentV4<TradeTrustDocumentV4> => {
   return diagnose({ version: "4.0", kind: "wrapped", document, debug: false, mode }).length === 0;
 };
 
@@ -118,6 +118,6 @@ export const isSignedWrappedV3Document = (
 export const isSignedWrappedV4Document = (
   document: any,
   { mode }: { mode: Mode } = { mode: "non-strict" }
-): document is SignedWrappedDocument<OpenAttestationDocumentV4> => {
+): document is SignedWrappedDocument<TradeTrustDocumentV4> => {
   return diagnose({ version: "4.0", kind: "signed", document, debug: false, mode }).length === 0;
 };

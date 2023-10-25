@@ -1,48 +1,54 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { obfuscateVerifiableCredential } from "../obfuscate";
-import { __unsafe__use__it__at__your__own__risks__wrapDocument as wrapDocument, verifySignature } from "../..";
-import { Salt, WrappedDocument } from "../../3.0/types";
 import { get } from "lodash";
+import {
+  _unsafe_use_it_at_your_own_risk_v4_alpha_wrapDocument as wrapDocument,
+  verifySignature,
+  obfuscate,
+} from "../..";
 import { decodeSalt } from "../salt";
-import { SchemaId } from "../../shared/@types/document";
-import * as v3 from "../../__generated__/schema.3.0";
-import { Method, OpenAttestationDocument, ProofType } from "../../__generated__/schema.3.0";
 import { toBuffer, isObfuscated, getObfuscatedData } from "../../shared/utils";
-import ObfuscatedWrapped from "../../../test/fixtures/v3/obfuscated-wrapped.json";
-import NotObfuscatedWrapped from "../../../test/fixtures/v3/not-obfuscated-wrapped.json";
+import { Salt, WrappedDocument, TradeTrustDocument, CredentialStatusType, IdentityProofType } from "../../4.0/types";
 
-jest.mock("../../3.0/validate"); // Skipping schema verification while wrapping
+import ObfuscatedWrapped from "../../../test/fixtures/v4/did-wrapped-obfuscated.json";
+import NotObfuscatedWrapped from "../../../test/fixtures/v4/did-wrapped.json";
 
-const openAttestationData: OpenAttestationDocument = {
+jest.mock("../../4.0/validate"); // Skipping schema verification while wrapping
+
+const data: TradeTrustDocument = {
   "@context": [
     "https://www.w3.org/2018/credentials/v1",
     "https://www.w3.org/2018/credentials/examples/v1",
-    "https://schemata.openattestation.com/com/openattestation/1.0/OpenAttestation.v3.json",
+    "http://localhost:8080/alpha-context.json",
     "https://schemata.openattestation.com/com/openattestation/1.0/CustomContext.json",
   ],
   issuanceDate: "2010-01-01T19:23:24Z",
   name: "document owner name",
-  type: ["VerifiableCredential", "AlumniCredential"],
+  type: ["VerifiableCredential", "TradeTrustCredential"],
   credentialSubject: {
-    id: "did:example:ebfeb1f712ebc6f1c276e12ec21",
+    name: "TradeTrust Invoice",
     alumniOf: "Example University",
+    id: "urn:uuid:a013fb9d-bb03-4056-b696-05575eceaf42",
+    date: "2018-02-21",
+    customerId: "564",
+    terms: "Due Upon Receipt",
     array: ["one", "two", "three", "four"],
     arrayOfObject: [
       { foo: "bar", doo: "foo" },
       { foo: "baz", doo: "faz" },
     ],
   },
-  issuer: "https://example.edu/issuers/14",
-  openAttestationMetadata: {
-    proof: {
-      type: ProofType.OpenAttestationProofMethod,
-      value: "0x9178F546D3FF57D7A6352bD61B80cCCD46199C2d",
-      method: Method.TokenRegistry,
-    },
+  credentialStatus: {
+    type: "TradeTrustCredentialStatus",
+    credentialStatusType: CredentialStatusType.None,
+  },
+  issuer: {
+    id: "https://example.edu/issuers/14",
     identityProof: {
-      identifier: "some.example",
-      type: v3.IdentityProofType.DNSTxt,
+      identityProofType: IdentityProofType.DNSDid,
+      identifier: "example.tradetrust.io",
     },
+    name: "hello",
+    type: "TradeTrustIssuer",
   },
   attachments: [
     {
@@ -62,7 +68,7 @@ const testData = {
   key1: "value1",
   key2: "value2",
   keyObject: { foo: "bar", bar: "dod" },
-  ...openAttestationData,
+  ...data,
 };
 
 const findSaltByPath = (salts: string, path: string): Salt | undefined => {
@@ -95,8 +101,8 @@ describe("privacy", () => {
   describe("obfuscateDocument", () => {
     test("removes one field from the root object", async () => {
       const field = "key1";
-      const newDocument = await wrapDocument(testData, { version: SchemaId.v3 });
-      const obfuscatedDocument = await obfuscateVerifiableCredential(newDocument, field);
+      const newDocument = await wrapDocument(testData);
+      const obfuscatedDocument = await obfuscate(newDocument, field);
       const verified = verifySignature(obfuscatedDocument);
       expect(verified).toBe(true);
 
@@ -106,8 +112,8 @@ describe("privacy", () => {
     test("removes one object from the root object", async () => {
       const field = "keyObject";
       const expectedFieldsToBeRemoved = ["keyObject.foo", "keyObject.bar"];
-      const newDocument = await wrapDocument(testData, { version: SchemaId.v3 });
-      const obfuscatedDocument = await obfuscateVerifiableCredential(newDocument, field);
+      const newDocument = await wrapDocument(testData);
+      const obfuscatedDocument = await obfuscate(newDocument, field);
 
       const verified = verifySignature(obfuscatedDocument);
       expect(verified).toBe(true);
@@ -119,8 +125,8 @@ describe("privacy", () => {
     });
     test("removes one key of an object from an array", async () => {
       const field = "credentialSubject.arrayOfObject[0].foo";
-      const newDocument = await wrapDocument(testData, { version: SchemaId.v3 });
-      const obfuscatedDocument = await obfuscateVerifiableCredential(newDocument, field);
+      const newDocument = await wrapDocument(testData);
+      const obfuscatedDocument = await obfuscate(newDocument, field);
 
       const verified = verifySignature(obfuscatedDocument);
       expect(verified).toBe(true);
@@ -143,8 +149,8 @@ describe("privacy", () => {
         "credentialSubject.arrayOfObject[0].foo",
         "credentialSubject.arrayOfObject[0].doo",
       ];
-      const newDocument = await wrapDocument(testData, { version: SchemaId.v3 });
-      const obfuscatedDocument = await obfuscateVerifiableCredential(newDocument, field);
+      const newDocument = await wrapDocument(testData);
+      const obfuscatedDocument = await obfuscate(newDocument, field);
 
       const verified = verifySignature(obfuscatedDocument);
       expect(verified).toBe(true);
@@ -176,8 +182,8 @@ describe("privacy", () => {
         "attachments[1].fileName",
         "attachments[1].data",
       ];
-      const newDocument = await wrapDocument(testData, { version: SchemaId.v3 });
-      const obfuscatedDocument = await obfuscateVerifiableCredential(newDocument, field);
+      const newDocument = await wrapDocument(testData);
+      const obfuscatedDocument = await obfuscate(newDocument, field);
 
       const verified = verifySignature(obfuscatedDocument);
       expect(verified).toBe(true);
@@ -197,8 +203,8 @@ describe("privacy", () => {
 
     test("removes multiple fields", async () => {
       const fields = ["key1", "key2"];
-      const newDocument = await wrapDocument(testData, { version: SchemaId.v3 });
-      const obfuscatedDocument = await obfuscateVerifiableCredential(newDocument, fields);
+      const newDocument = await wrapDocument(testData);
+      const obfuscatedDocument = await obfuscate(newDocument, fields);
       const verified = verifySignature(obfuscatedDocument);
       expect(verified).toBe(true);
 
@@ -210,8 +216,8 @@ describe("privacy", () => {
 
     test("removes values from nested object", async () => {
       const field = "credentialSubject.alumniOf";
-      const newDocument = await wrapDocument(openAttestationData, { version: SchemaId.v3 });
-      const obfuscatedDocument = await obfuscateVerifiableCredential(newDocument, field);
+      const newDocument = await wrapDocument(data);
+      const obfuscatedDocument = await obfuscate(newDocument, field);
       const verified = verifySignature(obfuscatedDocument);
       expect(verified).toBe(true);
 
@@ -221,8 +227,8 @@ describe("privacy", () => {
 
     test("removes values from arrays", async () => {
       const fields = ["credentialSubject.array[2]", "credentialSubject.array[3]"];
-      const newDocument = await wrapDocument(openAttestationData, { version: SchemaId.v3 });
-      const obfuscatedDocument = await obfuscateVerifiableCredential(newDocument, fields);
+      const newDocument = await wrapDocument(data);
+      const obfuscatedDocument = await obfuscate(newDocument, fields);
       const verified = verifySignature(obfuscatedDocument);
       expect(verified).toBe(true);
 
@@ -247,10 +253,10 @@ describe("privacy", () => {
     });
 
     test("is transitive", async () => {
-      const newDocument = await wrapDocument(testData, { version: SchemaId.v3 });
-      const intermediateDoc = obfuscateVerifiableCredential(newDocument, "key1");
-      const finalDoc1 = obfuscateVerifiableCredential(intermediateDoc, "key2");
-      const finalDoc2 = obfuscateVerifiableCredential(newDocument, ["key1", "key2"]);
+      const newDocument = await wrapDocument(testData);
+      const intermediateDoc = obfuscate(newDocument, "key1");
+      const finalDoc1 = obfuscate(intermediateDoc, "key2");
+      const finalDoc2 = obfuscate(newDocument, ["key1", "key2"]);
 
       expect(finalDoc1).toEqual(finalDoc2);
       expect(intermediateDoc).not.toHaveProperty("key1");
@@ -262,30 +268,30 @@ describe("privacy", () => {
   });
 
   describe("getObfuscated", () => {
-    const documentObfuscatedV3 = ObfuscatedWrapped as WrappedDocument<OpenAttestationDocument>;
-    const documentNotObfuscatedV3 = NotObfuscatedWrapped as WrappedDocument<OpenAttestationDocument>;
+    const documentObfuscatedV4 = ObfuscatedWrapped as WrappedDocument;
+    const documentNotObfuscatedV4 = NotObfuscatedWrapped as WrappedDocument;
 
-    test("should return empty array when there is no obfuscated data in document v3", () => {
-      expect(getObfuscatedData(documentNotObfuscatedV3)).toHaveLength(0);
+    test("should return empty array when there is no obfuscated data in document v4", () => {
+      expect(getObfuscatedData(documentNotObfuscatedV4)).toHaveLength(0);
     });
 
-    test("should return array of hashes when there is obfuscated data in document v3", () => {
-      const obfuscatedData = getObfuscatedData(documentObfuscatedV3);
+    test("should return array of hashes when there is obfuscated data in document v4", () => {
+      const obfuscatedData = getObfuscatedData(documentObfuscatedV4);
       expect(obfuscatedData.length).toBe(1);
-      expect(obfuscatedData?.[0]).toBe("e411260249d681968bdde76246350f7ca1c9bf1fae59b6bbf147692961b12e26");
+      expect(obfuscatedData?.[0]).toBe("9e1e02a3e73cde8796839caac22c98379ed04a815ee9b80a9ee46e0ef251aa22");
     });
   });
 
   describe("isObfuscated", () => {
-    const documentObfuscatedV3 = ObfuscatedWrapped as WrappedDocument<OpenAttestationDocument>;
-    const documentNotObfuscatedV3 = NotObfuscatedWrapped as WrappedDocument<OpenAttestationDocument>;
+    const documentObfuscatedV4 = ObfuscatedWrapped as WrappedDocument;
+    const documentNotObfuscatedV4 = NotObfuscatedWrapped as WrappedDocument;
 
-    test("should return false when there is no obfuscated data in document v3", () => {
-      expect(isObfuscated(documentNotObfuscatedV3)).toBe(false);
+    test("should return false when there is no obfuscated data in document v4", () => {
+      expect(isObfuscated(documentNotObfuscatedV4)).toBe(false);
     });
 
-    test("should return true where there is obfuscated data in document v3", () => {
-      expect(isObfuscated(documentObfuscatedV3)).toBe(true);
+    test("should return true where there is obfuscated data in document v4", () => {
+      expect(isObfuscated(documentObfuscatedV4)).toBe(true);
     });
   });
 });

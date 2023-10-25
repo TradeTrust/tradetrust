@@ -1,6 +1,6 @@
 {
-  "title": "OpenAttestation v4.0 Schema",
-  "$id": "https://schemata.openattestation.com/com/openattestation/4.0/alpha-schema.json",
+  "title": "Tradetrust v4.0 Schema",
+  "$id": "http://localhost:8080/alpha-schema.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "definitions": {
@@ -13,9 +13,7 @@
         { "type": "string" }
       ],
       "description": "Specific verifiable credential type as explained by https://www.w3.org/TR/vc-data-model/#types"
-    }
-  },
-  "properties": {
+    },
     "@context": {
       "type": "array",
       "items": {
@@ -24,6 +22,60 @@
       },
       "description": "List of URI to determine the terminology used in the verifiable credential as explained by https://www.w3.org/TR/vc-data-model/#contexts"
     },
+    "credentialSubject": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri",
+          "description": "An identifier related to the subject of the verifiable credential. More information in https://www.w3.org/TR/vc-data-model/#credential-subject"
+        },
+        "type": { "$ref": "#/definitions/type" }
+      },
+      "additionalProperties": true
+    },
+    "identityVC": {
+      "type": "object",
+      "properties": {
+        "issuer": {
+          "oneOf": [
+            {
+              "type": "object",
+              "title": "IdentityVCIssuer",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "URI when dereferenced, results in a document containing machine-readable information about the issuer that can be used to verify the information expressed in the credential. More information in https://www.w3.org/TR/vc-data-model/#issuer"
+                }
+              }
+            },
+            {
+              "type": "string",
+              "format": "uri",
+              "description": "URI when dereferenced, results in a document containing machine-readable information about the issuer that can be used to verify the information expressed in the credential. More information in https://www.w3.org/TR/vc-data-model/#issuer"
+            }
+          ]
+        },
+        "credentialStatus": {
+          "title": "IdentityVCCredentialStatus",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uri",
+              "description": "MUST be a URI. More information in https://www.w3.org/TR/vc-data-model/#status"
+            },
+            "type": {
+              "type": "string",
+              "description": "type expresses the credential status type (also referred to as the credential status method). It is expected that the value will provide enough information to determine the current status of the credential and that machine readable information needs to be retrievable from the URI. For example, the object could contain a link to an external document noting whether or not the credential is suspended or revoked. More information in https://www.w3.org/TR/vc-data-model/#status"
+            }
+          }
+        }
+      }
+    }
+  },
+  "properties": {
     "id": {
       "type": "string",
       "format": "uri",
@@ -46,6 +98,7 @@
     },
     "issuer": {
       "type": "object",
+      "title": "Issuer",
       "properties": {
         "id": {
           "type": "string",
@@ -62,18 +115,45 @@
           "properties": {
             "identityProofType": {
               "type": "string",
-              "enum": ["DNS-TXT", "DNS-DID", "DID"]
+              "enum": ["DNS-TXT", "DNS-DID", "DID", "IDVC"]
             },
             "identifier": {
               "type": "string",
               "description": "Identifier to be shown to end user upon verifying the identity"
+            },
+            "identityVC": {
+              "type": "object",
+              "properties": {
+                "type": { "$ref": "#/definitions/type" },
+                "data": {
+                  "title": "IdentityVCData",
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "@context": { "$ref": "#/definitions/@context" }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "credentialSubject": { "$ref": "#/definitions/credentialSubject" }
+                      }
+                    },
+                    { "$ref": "#/definitions/identityVC" }
+                  ],
+                  "required": ["@context", "issuer", "credentialSubject"]
+                }
+              },
+              "required": ["data"]
             }
           },
           "required": ["identityProofType", "identifier"],
           "additionalProperties": false
         }
       },
-      "required": ["id", "name", "identityProof"]
+      "required": ["id", "identityProof"]
     },
     "credentialStatus": {
       "type": "object",
@@ -135,17 +215,6 @@
       },
       "required": ["renderMethodType", "name", "url"]
     },
-    "credentialSubject": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "uri",
-          "description": "An identifier related to the subject of the verifiable credential. More information in https://www.w3.org/TR/vc-data-model/#credential-subject"
-        },
-        "type": { "$ref": "#/definitions/type" }
-      }
-    },
     "proof": {
       "type": "object",
       "properties": {
@@ -164,7 +233,58 @@
       },
       "required": ["proofPurpose", "targetHash", "proofs", "merkleRoot", "salts", "privacy"],
       "additionalProperties": false
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string",
+            "description": "Name of this attachment, with appropriate extensions"
+          },
+          "mimeType": {
+            "type": "string",
+            "description": "Media type (or MIME type) of this attachment"
+          },
+          "data": {
+            "type": "string",
+            "description": "Base64 encoding of this attachment"
+          }
+        },
+        "required": ["fileName", "mimeType", "data"],
+        "additionalProperties": false
+      }
+    },
+    "network": {
+      "type": "object",
+      "properties": {
+        "chain": {
+          "type": "string",
+          "description": "Which blockchain being used"
+        },
+        "chainId": {
+          "type": "string",
+          "description": "Chain ID of the network used"
+        }
+      },
+      "required": ["chain"],
+      "additionalProperties": true
     }
   },
+  "allOf": [
+    {
+      "type": "object",
+      "properties": {
+        "@context": { "$ref": "#/definitions/@context" }
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "credentialSubject": { "$ref": "#/definitions/credentialSubject" }
+      }
+    }
+  ],
   "required": ["@context", "issuer", "credentialStatus", "credentialSubject"]
 }

@@ -5,12 +5,12 @@ import { WrappedDocument } from "./types";
 import { digestCredential } from "../4.0/digest";
 import { validateSchema as validate } from "../shared/validate";
 import { WrapDocumentOptionV4 } from "../shared/@types/wrap";
-import { OpenAttestationDocument } from "../__generated__/schema.4.0";
+import { TradeTrustDocument } from "../__generated__/schema.4.0";
 import { encodeSalt, salt } from "./salt";
 import { validateW3C } from "./validate";
 import { getSchema } from "../shared/ajv";
 
-export const wrapDocument = async <T extends OpenAttestationDocument>(
+export const wrapDocument = async <T extends TradeTrustDocument>(
   credential: T,
   options: WrapDocumentOptionV4 // eslint-disable-line @typescript-eslint/no-unused-vars
 ): Promise<WrappedDocument<T>> => {
@@ -30,8 +30,8 @@ export const wrapDocument = async <T extends OpenAttestationDocument>(
   document["@context"] = Array.from(contexts);
 
   // 2. Ensure that required types are present and in the correct order
-  // type: ["VerifiableCredential", "OpenAttestationCredential", ...]
-  const types = new Set(["VerifiableCredential", "OpenAttestationCredential"]);
+  // type: ["VerifiableCredential", "TradeTrustCredential", ...]
+  const types = new Set(["VerifiableCredential", "TradeTrustCredential"]);
 
   if (typeof document["type"] === "string") {
     types.add(document["type"]);
@@ -55,7 +55,7 @@ export const wrapDocument = async <T extends OpenAttestationDocument>(
   const verifiableCredential: WrappedDocument<T> = {
     ...document,
     proof: {
-      type: "OpenAttestationMerkleProofSignature2018",
+      type: "TradeTrustMerkleProofSignature2018",
       proofPurpose: "assertionMethod",
       targetHash: digest,
       proofs: merkleProof,
@@ -75,7 +75,7 @@ export const wrapDocument = async <T extends OpenAttestationDocument>(
   return verifiableCredential;
 };
 
-export const wrapDocuments = async <T extends OpenAttestationDocument>(
+export const wrapDocuments = async <T extends TradeTrustDocument>(
   documents: T[],
   options: WrapDocumentOptionV4
 ): Promise<WrappedDocument<T>[]> => {

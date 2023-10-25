@@ -1,10 +1,10 @@
-import { OpenAttestationDocument, WrappedDocument, SignedWrappedDocument, SignedWrappedProof } from "./types";
+import { TradeTrustDocument, WrappedDocument, SignedWrappedDocument, SignedWrappedProof } from "./types";
 import { sign } from "../shared/signer";
 import { SigningKey, SUPPORTED_SIGNING_ALGORITHM } from "../shared/@types/sign";
 import { isSignedWrappedV4Document } from "../shared/utils";
 import { ethers } from "ethers";
 
-export const signDocument = async <T extends OpenAttestationDocument>(
+export const signDocument = async <T extends TradeTrustDocument>(
   document: SignedWrappedDocument<T> | WrappedDocument<T>,
   algorithm: SUPPORTED_SIGNING_ALGORITHM,
   keyOrSigner: SigningKey | ethers.Signer

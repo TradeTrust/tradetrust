@@ -32,7 +32,7 @@ import { signDocument as signDocumentV4 } from "./4.0/sign";
 import { verify as verifyV4 } from "./4.0/verify";
 import { digestCredential as digestCredentialV4 } from "./4.0/digest";
 import { obfuscateVerifiableCredential as obfuscateVerifiableCredentialV4 } from "./4.0/obfuscate";
-import { OpenAttestationDocument as OpenAttestationDocumentV4 } from "./__generated__/schema.4.0";
+import { TradeTrustDocument as TradeTrustDocumentV4 } from "./__generated__/schema.4.0";
 
 export function wrapDocument<T extends OpenAttestationDocumentV2>(
   data: T,
@@ -62,14 +62,14 @@ export function __unsafe__use__it__at__your__own__risks__wrapDocuments<T extends
   return wrapDocumentsV3(dataArray, options ?? { version: SchemaId.v3 });
 }
 
-export function _unsafe_use_it_at_your_own_risk_v4_alpha_wrapDocument<T extends OpenAttestationDocumentV4>(
+export function _unsafe_use_it_at_your_own_risk_v4_alpha_wrapDocument<T extends TradeTrustDocumentV4>(
   data: T,
   options?: WrapDocumentOptionV4
 ): Promise<WrappedDocumentV4<T>> {
   return wrapDocumentV4(data, options ?? { version: SchemaId.v4 });
 }
 
-export function _unsafe_use_it_at_your_own_risk_v4_alpha_wrapDocuments<T extends OpenAttestationDocumentV4>(
+export function _unsafe_use_it_at_your_own_risk_v4_alpha_wrapDocuments<T extends TradeTrustDocumentV4>(
   dataArray: T[],
   options?: WrapDocumentOptionV4
 ): Promise<WrappedDocumentV4<T>[]> {
@@ -97,9 +97,9 @@ export function verifySignature<T extends WrappedDocument<OpenAttestationDocumen
 }
 
 export function digest(document: OpenAttestationDocumentV3, salts: v3.Salt[], obfuscatedData: string[]): string;
-export function digest(document: OpenAttestationDocumentV4, salts: v4.Salt[], obfuscatedData: string[]): string;
+export function digest(document: TradeTrustDocumentV4, salts: v4.Salt[], obfuscatedData: string[]): string;
 export function digest(
-  document: OpenAttestationDocumentV3 | OpenAttestationDocumentV4,
+  document: OpenAttestationDocumentV3 | TradeTrustDocumentV4,
   salts: v3.Salt[] | v4.Salt[],
   obfuscatedData: string[]
 ): string {
@@ -119,7 +119,7 @@ export function obfuscate<T extends OpenAttestationDocumentV3>(
   document: WrappedDocument<T>,
   fields: string[] | string
 ): WrappedDocument<T>;
-export function obfuscate<T extends OpenAttestationDocumentV4>(
+export function obfuscate<T extends TradeTrustDocumentV4>(
   document: WrappedDocument<T>,
   fields: string[] | string
 ): WrappedDocument<T>;
@@ -145,7 +145,7 @@ export async function signDocument<T extends v3.OpenAttestationDocument>(
   algorithm: SUPPORTED_SIGNING_ALGORITHM,
   keyOrSigner: SigningKey | ethers.Signer
 ): Promise<v3.SignedWrappedDocument<T>>;
-export async function signDocument<T extends v4.OpenAttestationDocument>(
+export async function signDocument<T extends v4.TradeTrustDocument>(
   document: v4.SignedWrappedDocument<T> | v4.WrappedDocument<T>,
   algorithm: SUPPORTED_SIGNING_ALGORITHM,
   keyOrSigner: SigningKey | ethers.Signer

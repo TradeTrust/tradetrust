@@ -1,38 +1,44 @@
 import { cloneDeep } from "lodash";
-import { Method, ProofType, OpenAttestationDocument, TemplateType } from "../../__generated__/schema.3.0";
+import {
+  IdentityProofType,
+  TradeTrustDocument,
+  RenderMethodType,
+  CredentialStatusType,
+} from "../../__generated__/schema.4.0";
 import { salt, decodeSalt } from "../salt";
-import * as v3 from "../../__generated__/schema.3.0";
 import { Base64 } from "js-base64";
 
-const sampleDoc: OpenAttestationDocument = {
+const sampleDoc: TradeTrustDocument = {
   "@context": ["https://www.w3.org/2018/credentials/v1", "https://www.w3.org/2018/credentials/examples/v1"],
   id: "http://example.edu/credentials/58473",
   type: ["VerifiableCredential", "AlumniCredential"],
-  issuer: "https://example.edu/issuers/14",
+  issuer: {
+    id: "https://example.edu/issuers/14",
+    identityProof: {
+      identityProofType: IdentityProofType.DNSDid,
+      identifier: "example.tradetrust.io",
+    },
+    name: "hello",
+    type: "TradeTrustIssuer",
+  },
   issuanceDate: "2010-01-01T19:23:24Z",
+  credentialStatus: {
+    type: "TradeTrustCredentialStatus",
+    credentialStatusType: CredentialStatusType.None,
+  },
   credentialSubject: {
     id: "did:example:ebfeb1f712ebc6f1c276e12ec21",
     alumniOf: "Example University",
   },
-  openAttestationMetadata: {
-    template: {
-      name: "EXAMPLE_RENDERER",
-      type: TemplateType.EmbeddedRenderer,
-      url: "https://renderer.openattestation.com/",
-    },
-    proof: {
-      type: ProofType.OpenAttestationProofMethod,
-      method: Method.DocumentStore,
-      value: "0xED2E50434Ac3623bAD763a35213DAD79b43208E4",
-    },
-    identityProof: {
-      identifier: "some.example",
-      type: v3.IdentityProofType.DNSTxt,
-    },
-  },
+  renderMethod: {
+    type: "TradeTrustRenderMethod",
+    renderMethodType: RenderMethodType.EmbeddedRenderer,
+    name: "INVOICE",
+    url: "https://generic-templates.tradetrust.io",
+  }
 };
 
-describe("digest v3.0", () => {
+describe("digest v4.0", () => {
   describe("salt", () => {
     test("handles shadowed keys correctly (type 1: root, dot notation)", () => {
       const document = {

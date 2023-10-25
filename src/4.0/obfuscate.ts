@@ -1,11 +1,11 @@
-import { OpenAttestationDocument } from "../__generated__/schema.4.0";
+import { TradeTrustDocument } from "../__generated__/schema.4.0";
 import { toBuffer } from "../shared/utils";
 import { WrappedDocument } from "./types";
 import { cloneDeep, get, unset, pick } from "lodash";
 import { decodeSalt, encodeSalt } from "./salt";
 import { traverseAndFlatten } from "./traverseAndFlatten";
 
-const obfuscate = (_data: WrappedDocument<OpenAttestationDocument>, fields: string[] | string) => {
+const obfuscate = (_data: WrappedDocument<TradeTrustDocument>, fields: string[] | string) => {
   const data = cloneDeep(_data); // Prevents alteration of original data
 
   const fieldsAsArray = ([] as string[]).concat(fields);
@@ -38,9 +38,9 @@ const obfuscate = (_data: WrappedDocument<OpenAttestationDocument>, fields: stri
 };
 
 export const obfuscateVerifiableCredential = (
-  document: WrappedDocument<OpenAttestationDocument>,
+  document: WrappedDocument<TradeTrustDocument>,
   fields: string[] | string
-): WrappedDocument<OpenAttestationDocument> => {
+): WrappedDocument<TradeTrustDocument> => {
   const { data, obfuscatedData } = obfuscate(document, fields);
   const currentObfuscatedData = document.proof.privacy.obfuscated;
   const newObfuscatedData = currentObfuscatedData.concat(obfuscatedData);
