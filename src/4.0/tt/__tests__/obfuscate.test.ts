@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { get } from "lodash";
 import {
-  _unsafe_use_it_at_your_own_risk_v4_alpha_wrapDocument as wrapDocument,
+  _unsafe_use_it_at_your_own_risk_v4_alpha_tt_wrapDocument as wrapDocument,
   verifySignature,
   obfuscate,
-} from "../..";
+} from "../../..";
 import { decodeSalt } from "../salt";
-import { toBuffer, isObfuscated, getObfuscatedData } from "../../shared/utils";
-import { Salt, WrappedDocument, TradeTrustDocument, CredentialStatusType, IdentityProofType } from "../../4.0/types";
+import { toBuffer, isObfuscated, getObfuscatedData } from "../../../shared/utils";
+import { Salt, WrappedDocument, TradeTrustDocument, CredentialStatusType, IdentityProofType } from "../../../4.0/tt/types";
 
-import ObfuscatedWrapped from "../../../test/fixtures/v4/did-wrapped-obfuscated.json";
-import NotObfuscatedWrapped from "../../../test/fixtures/v4/did-wrapped.json";
+import ObfuscatedWrapped from "../../../../test/fixtures/v4/tt/did-wrapped-obfuscated.json";
+import NotObfuscatedWrapped from "../../../../test/fixtures/v4/tt/did-wrapped.json";
 
-jest.mock("../../4.0/validate"); // Skipping schema verification while wrapping
+jest.mock("../../../4.0/tt/validate"); // Skipping schema verification while wrapping
 
 const data: TradeTrustDocument = {
   "@context": [

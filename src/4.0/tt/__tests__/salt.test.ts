@@ -4,7 +4,7 @@ import {
   TradeTrustDocument,
   RenderMethodType,
   CredentialStatusType,
-} from "../../__generated__/schema.4.0";
+} from "../../../__generated__/tt-schema.4.0";
 import { salt, decodeSalt } from "../salt";
 import { Base64 } from "js-base64";
 

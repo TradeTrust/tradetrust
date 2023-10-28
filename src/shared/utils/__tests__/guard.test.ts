@@ -4,9 +4,19 @@ import {
   isSignedWrappedV3Document,
   isWrappedV2Document,
   isWrappedV3Document,
+  isSignedWrappedTTV4Document,
+  isSignedWrappedOAV4Document,
+  isWrappedOAV4Document,
+  isWrappedTTV4Document,
+  isRawOAV4Document,
+  isRawTTV4Document,
+  isRawV2Document,
+  isRawV3Document,
 } from "../guard";
 import {
   __unsafe__use__it__at__your__own__risks__wrapDocument,
+  _unsafe_use_it_at_your_own_risk_v4_alpha_oa_wrapDocument,
+  _unsafe_use_it_at_your_own_risk_v4_alpha_tt_wrapDocument,
   SchemaId,
   signDocument,
   SUPPORTED_SIGNING_ALGORITHM,
@@ -15,6 +25,13 @@ import {
 } from "../../..";
 import * as v3 from "../../../3.0/types";
 import * as v2 from "../../../2.0/types";
+
+import sampleOARawV4 from "../../../../test/fixtures/v4/oa/did-raw.json";
+import sampleOAWrappedV4 from "../../../../test/fixtures/v4/oa/did-wrapped.json";
+import sampleOAWrappedSignedV4 from "../../../../test/fixtures/v4/oa/did-signed-wrapped.json";
+import sampleTTRawV4 from "../../../../test/fixtures/v4/tt/did-raw.json";
+import sampleTTWrappedV4 from "../../../../test/fixtures/v4/tt/did-wrapped.json";
+import sampleTTWrappedSignedV4 from "../../../../test/fixtures/v4/tt/did-wrapped-signed.json";
 
 describe("guard", () => {
   let wrappedV3Document: WrappedDocument<v3.OpenAttestationDocument>;
@@ -349,6 +366,45 @@ describe("guard", () => {
     });
     test("should not be valid when proof does not have signature", () => {
       expect(isSignedWrappedV3Document(omit(cloneDeep(signedV3Document), "proof.signature"))).toBe(false);
+    });
+  });
+
+  describe("v4 variants", () => {
+    it("the guards should distinguish between v2,v3,and v4 variants for raw documents for oa v4 docs", () => {
+      expect(isRawV2Document(sampleOARawV4)).toBeFalsy();
+      expect(isRawV3Document(sampleOARawV4)).toBeFalsy();
+      expect(isRawTTV4Document(sampleOARawV4)).toBeFalsy();
+      expect(isRawOAV4Document(sampleOARawV4)).toBeTruthy();
+    });
+    it("the guards should distinguish between v2,v3,and v4 variants for raw documents tt v4 docs", () => {
+      expect(isRawV2Document(sampleTTRawV4)).toBeFalsy();
+      expect(isRawV3Document(sampleTTRawV4)).toBeFalsy();
+      expect(isRawTTV4Document(sampleTTRawV4)).toBeTruthy();
+      expect(isRawOAV4Document(sampleTTRawV4)).toBeFalsy();
+    });
+    it("the guards should distinguish between v2,v3,and v4 variants for raw documents oa wrapped v4 docs", () => {
+      expect(isWrappedV2Document(sampleOAWrappedV4)).toBeFalsy();
+      expect(isWrappedV3Document(sampleOAWrappedV4)).toBeFalsy();
+      expect(isWrappedOAV4Document(sampleOAWrappedV4)).toBeTruthy();
+      expect(isWrappedTTV4Document(sampleOAWrappedV4)).toBeFalsy();
+    });
+    it("the guards should distinguish between v2,v3,and v4 variants for raw documents tt wrapped v4 docs", () => {
+      expect(isWrappedV2Document(sampleTTWrappedV4)).toBeFalsy();
+      expect(isWrappedV3Document(sampleTTWrappedV4)).toBeFalsy();
+      expect(isWrappedOAV4Document(sampleTTWrappedV4)).toBeFalsy();
+      expect(isWrappedTTV4Document(sampleTTWrappedV4)).toBeTruthy();
+    });
+    it("the guards should distinguish between v2,v3,and v4 variants for wrapped signed documents oa wrapped signed v4 docs", () => {
+      expect(isSignedWrappedV2Document(sampleOAWrappedSignedV4)).toBeFalsy();
+      expect(isSignedWrappedV3Document(sampleOAWrappedSignedV4)).toBeFalsy();
+      expect(isSignedWrappedOAV4Document(sampleOAWrappedSignedV4)).toBeTruthy();
+      expect(isSignedWrappedTTV4Document(sampleOAWrappedSignedV4)).toBeFalsy();
+    });
+    it("the guards should distinguish between v2,v3,and v4 variants for wrapped signed documents tt wrapped signed v4 docs", () => {
+      expect(isSignedWrappedV2Document(sampleTTWrappedSignedV4)).toBeFalsy();
+      expect(isSignedWrappedV3Document(sampleTTWrappedSignedV4)).toBeFalsy();
+      expect(isSignedWrappedOAV4Document(sampleTTWrappedSignedV4)).toBeFalsy();
+      expect(isSignedWrappedTTV4Document(sampleTTWrappedSignedV4)).toBeTruthy();
     });
   });
 });

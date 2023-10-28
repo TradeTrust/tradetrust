@@ -1,9 +1,9 @@
-import { TradeTrustDocument } from "../../__generated__/schema.4.0";
-import { WrappedDocument } from "../../4.0/types";
-import { ContextUrl } from "../../shared/@types/document";
+import { OpenAttestationDocument } from "../../../__generated__/oa-schema.4.0";
+import { WrappedDocument } from "../types";
+import { ContextUrl } from "../../../shared/@types/document";
 import { documentLoaders, expand } from "@govtechsg/jsonld";
 import fetch from "cross-fetch";
-import w3cDataModel from "../../shared/contexts/w3c-data-model-v1.json";
+import w3cDataModel from "../../../shared/contexts/w3c-data-model-v1.json";
 
 const getId = (objectOrString: string | { id: string }): string => {
   if (typeof objectOrString === "string") {
@@ -42,7 +42,7 @@ const isValidRFC3986 = (str: any) => {
 };
 
 let w3cDataModelUrl = "https://www.w3.org/2018/credentials/v1";
-const preloadedContextList = [w3cDataModelUrl, ContextUrl.v4_alpha];
+const preloadedContextList = [w3cDataModelUrl, ContextUrl.oa_v4_alpha];
 const contexts: Map<string, Promise<any>> = new Map();
 const nodeDocumentLoader = documentLoaders.xhr ? documentLoaders.xhr() : documentLoaders.node();
 let preload = true;
@@ -81,7 +81,7 @@ const documentLoader = async (url: string) => {
   }
 };
 
-export async function validateW3C<T extends TradeTrustDocument>(credential: WrappedDocument<T>): Promise<void> {
+export async function validateW3C<T extends OpenAttestationDocument>(credential: WrappedDocument<T>): Promise<void> {
   // ensure first context is 'https://www.w3.org/2018/credentials/v1' as it's mandatory, see https://www.w3.org/TR/vc-data-model/#contexts
   if (
     !Array.isArray(credential["@context"]) ||

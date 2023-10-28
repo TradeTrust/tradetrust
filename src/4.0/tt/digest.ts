@@ -1,7 +1,7 @@
 import { get, sortBy } from "lodash";
 import { keccak256 } from "js-sha3";
 import { Salt } from "./types";
-import { TradeTrustDocument } from "../__generated__/schema.4.0";
+import { TradeTrustDocument } from "../../__generated__/tt-schema.4.0";
 
 export const digestCredential = (
   document: Omit<TradeTrustDocument, "proof">,

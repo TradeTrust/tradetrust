@@ -7,23 +7,28 @@ import {
   VerifiableCredentialSignedProof as SignedWrappedProofV3,
 } from "../../3.0/types";
 import {
-  WrappedProof as WrappedProofV4,
-  WrappedProofStrict as WrappedProofStrictV4,
-  SignedWrappedProof as SignedWrappedProofV4,
-} from "../../4.0/types";
+  WrappedProof as OAWrappedProofV4,
+  WrappedProofStrict as OAWrappedProofStrictV4,
+  SignedWrappedProof as OASignedWrappedProofV4,
+} from "../../4.0/oa/types";
+import {
+  WrappedProof as TTWrappedProofV4,
+  WrappedProofStrict as TTWrappedProofStrictV4,
+  SignedWrappedProof as TTSignedWrappedProofV4,
+} from "../../4.0/tt/types";
 import { ArrayProof, Signature, SignatureStrict } from "../../2.0/types";
 import { clone, cloneDeepWith } from "lodash";
 import { buildAjv, getSchema } from "../ajv";
 import { Kind, Mode } from "./@types/diagnose";
 import { isStringArray } from "./utils";
 
-type Version = "2.0" | "3.0" | "4.0";
+type Version = "2.0" | "3.0" | "oa_4.0" | "tt_4.0";
 
 interface DiagnoseError {
   message: string;
 }
 
-const handleError = (debug: boolean, ...messages: string[]) => {
+export const handleError = (debug: boolean, ...messages: string[]) => {
   if (debug) {
     for (const message of messages) {
       logger.info(message);
@@ -93,9 +98,10 @@ export const diagnose = ({
   const versionToSchemaId: Record<Version, SchemaId> = {
     "2.0": SchemaId.v2,
     "3.0": SchemaId.v3,
-    "4.0": SchemaId.v4,
+    "oa_4.0": SchemaId.oa_v4,
+    "tt_4.0": SchemaId.tt_v4
   };
-
+  
   const errors = validate(
     document,
     getSchema(versionToSchemaId[version], mode === "non-strict" ? ajv : undefined),
@@ -116,8 +122,10 @@ export const diagnose = ({
   }
 
   switch (version) {
-    case "4.0":
-      return diagnoseV4({ mode, debug, document, kind });
+    case "tt_4.0":
+      return diagnoseTTV4({ mode, debug, document, kind });
+    case "oa_4.0":
+      return diagnoseOAV4({ mode, debug, document, kind });
     case "3.0":
       return diagnoseV3({ mode, debug, document, kind });
     case "2.0":
@@ -191,7 +199,7 @@ const diagnoseV3 = ({ kind, document, debug, mode }: { kind: Kind; document: any
   return [];
 };
 
-const diagnoseV4 = ({
+const diagnoseOAV4 = ({
   kind,
   document,
   debug,
@@ -218,7 +226,103 @@ const diagnoseV4 = ({
 
     // 2. Ensure that required @contexts are present
     // @context: [Base, OA, ...]
-    const contexts = ["https://www.w3.org/2018/credentials/v1", ContextUrl.v4_alpha];
+    const contexts = ["https://www.w3.org/2018/credentials/v1", ContextUrl.oa_v4_alpha];
+    if (isStringArray(document["@context"])) {
+      for (let i = 0; i < contexts.length; i++) {
+        if (document["@context"][i] !== contexts[i]) {
+          return handleError(
+            debug,
+            `The document @context contains an unexpected value or in the wrong order. Expected ${contexts}, received ${document["@context"]}`
+          );
+        }
+      }
+    } else {
+      return handleError(
+        debug,
+        `The document @context should be an array of string values. Expected ${contexts}, received ${document["@context"]}`
+      );
+    }
+
+    // 3. Ensure that required types are present
+    // type: ["VerifiableCredential", "OpenAttestationCredential", ...]
+    const types = ["VerifiableCredential", "OpenAttestationCredential"];
+    if (isStringArray(document["type"])) {
+      for (let i = 0; i < types.length; i++) {
+        if (document["type"][i] !== types[i]) {
+          return handleError(
+            debug,
+            `The document type contains an unexpected value or in the wrong order. Expected ${types}, received ${document["type"]}`
+          );
+        }
+      }
+    } else {
+      return handleError(
+        debug,
+        `The document type should be an array of string values. Expected ${types}, received ${document["type"]}`
+      );
+    }
+
+    // 4. Check proof object
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    if (mode === "strict") {
+      OAWrappedProofStrictV4.check(document.proof);
+    } else {
+      OAWrappedProofV4.check(document.proof);
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      return handleError(debug, e.message);
+    } else {
+      console.error(e);
+    }
+  }
+
+  /* Signed & wrapped document checks */
+  if (kind === "signed") {
+    if (!document.proof) {
+      return handleError(debug, `The document does not have a proof`);
+    }
+    try {
+      OASignedWrappedProofV4.check(document.proof);
+    } catch (e) {
+      if (e instanceof Error) {
+        return handleError(debug, e.message);
+      } else {
+        console.error(e);
+      }
+    }
+  }
+
+  return [];
+};
+const diagnoseTTV4 = ({
+  kind,
+  document,
+  debug,
+  mode,
+}: {
+  kind: Exclude<Kind, "raw">;
+  document: any;
+  debug: boolean;
+  mode: Mode;
+}) => {
+  /* Wrapped document checks */
+  try {
+    // 1. Since OA v4 has deprecated a few properties from v2/v3, check that they are not used
+    const deprecatedProperties = ["version", "openAttestationMetadata"];
+    const documentProperties = Object.keys(document);
+    const deprecatedDocumentProperties = documentProperties.filter((p) => deprecatedProperties.includes(p));
+
+    if (deprecatedDocumentProperties.length > 0) {
+      return handleError(
+        debug,
+        `The document has outdated properties previously used in v2/v3. The following properties are no longer in use in a v4 document: ${deprecatedDocumentProperties}`
+      );
+    }
+
+    // 2. Ensure that required @contexts are present
+    // @context: [Base, TT, ...]
+    const contexts = ["https://www.w3.org/2018/credentials/v1", ContextUrl.tt_v4_alpha];
     if (isStringArray(document["@context"])) {
       for (let i = 0; i < contexts.length; i++) {
         if (document["@context"][i] !== contexts[i]) {
@@ -257,9 +361,9 @@ const diagnoseV4 = ({
     // 4. Check proof object
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     if (mode === "strict") {
-      WrappedProofStrictV4.check(document.proof);
+      TTWrappedProofStrictV4.check(document.proof);
     } else {
-      WrappedProofV4.check(document.proof);
+      TTWrappedProofV4.check(document.proof);
     }
   } catch (e) {
     if (e instanceof Error) {
@@ -275,7 +379,7 @@ const diagnoseV4 = ({
       return handleError(debug, `The document does not have a proof`);
     }
     try {
-      SignedWrappedProofV4.check(document.proof);
+      TTSignedWrappedProofV4.check(document.proof);
     } catch (e) {
       if (e instanceof Error) {
         return handleError(debug, e.message);

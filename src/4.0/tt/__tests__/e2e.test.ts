@@ -1,23 +1,23 @@
 import {
-  _unsafe_use_it_at_your_own_risk_v4_alpha_wrapDocument as wrapDocument,
+  _unsafe_use_it_at_your_own_risk_v4_alpha_tt_wrapDocument as wrapDocument,
   obfuscate,
   SchemaId,
   validateSchema,
   verifySignature,
-} from "../..";
-import { validateSchema as validate } from "../../shared/validate";
-import { getSchema } from "../../shared/ajv";
-import { SignedWrappedDocument, WrappedDocument } from "../../4.0/types";
+} from "../../..";
+import { validateSchema as validate } from "../../../shared/validate";
+import { getSchema } from "../../../shared/ajv";
+import { SignedWrappedDocument, WrappedDocument } from "../../../4.0/tt/types";
 import {
   IdentityProofType,
   TradeTrustDocument,
   RenderMethodType,
   CredentialStatusType,
-} from "../../__generated__/schema.4.0";
+} from "../../../__generated__/tt-schema.4.0";
 import { cloneDeep, omit } from "lodash";
-import sample from "../../../test/fixtures/v4/did-raw.json";
-import sampleWrapped from "../../../test/fixtures/v4/did-wrapped.json";
-import sampleWrappedSigned from "../../../test/fixtures/v4/did-wrapped-signed.json";
+import sample from "../../../../test/fixtures/v4/tt/did-raw.json";
+import sampleWrapped from "../../../../test/fixtures/v4/tt/did-wrapped.json";
+import sampleWrappedSigned from "../../../../test/fixtures/v4/tt/did-wrapped-signed.json";
 
 const documentDid = sample as TradeTrustDocument;
 
@@ -144,7 +144,7 @@ describe("4.0 E2E Test Scenarios", () => {
   describe("validate", () => {
     test("should return true when document is valid and version is 4.0", () => {
       const credential = sample;
-      expect(validate(credential, getSchema(SchemaId.v4)).length).toStrictEqual(0);
+      expect(validate(credential, getSchema(SchemaId.tt_v4)).length).toStrictEqual(0);
     });
     test("should return true when document is valid and version is 4.0 and identityProof is DNS-DID", () => {
       const credential: WrappedDocument = sampleWrapped as WrappedDocument;

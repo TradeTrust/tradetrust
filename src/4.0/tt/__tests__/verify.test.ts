@@ -1,6 +1,6 @@
 import { verify } from "../verify";
-import sample from "../../../test/fixtures/v4/did-wrapped.json";
-import { WrappedDocument } from "../../4.0/types";
+import sample from "../../../../test/fixtures/v4/tt/did-wrapped.json";
+import { WrappedDocument } from "../../../4.0/tt/types";
 
 const sampleVerifiableCredential = sample as WrappedDocument;
 

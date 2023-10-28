@@ -1,9 +1,9 @@
 import { cloneDeep } from "lodash";
 import { digestCredential } from "../digest";
-import { WrappedDocument } from "../../4.0/types";
+import { WrappedDocument } from "../../../4.0/tt/types";
 import { obfuscateVerifiableCredential } from "../obfuscate";
 import { decodeSalt } from "../salt";
-import sample from "../../../test/fixtures/v4/did-idvc-wrapped.json";
+import sample from "../../../../test/fixtures/v4/tt/did-idvc-wrapped.json";
 
 const verifiableCredential = sample as WrappedDocument;
 // Digest will change whenever sample document is regenerated

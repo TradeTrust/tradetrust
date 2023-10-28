@@ -1,12 +1,10 @@
 /* eslint-disable jest/no-try-expect,jest/no-conditional-expect */
 import { cloneDeep } from "lodash";
-import {
-  _unsafe_use_it_at_your_own_risk_v4_alpha_wrapDocument as wrapDocumentV4,
-} from "../../index";
-import sample from "../../../test/fixtures/v4/did-raw.json";
-import sampleWithIDVC from "../../../test/fixtures/v4/did-idvc-raw.json";
-import { ContextUrl } from "../../shared/@types/document";
-import { TradeTrustDocument } from "../../__generated__/schema.4.0";
+import { _unsafe_use_it_at_your_own_risk_v4_alpha_tt_wrapDocument as wrapDocumentV4 } from "../../../index";
+import sample from "../../../../test/fixtures/v4/tt/did-raw.json";
+import sampleWithIDVC from "../../../../test/fixtures/v4/tt/did-idvc-raw.json";
+import { ContextUrl } from "../../../shared/@types/document";
+import { TradeTrustDocument } from "../../../__generated__/tt-schema.4.0";
 
 const sampleVc = sample as TradeTrustDocument;
 
@@ -34,7 +32,7 @@ describe("schema/4.0, plain vc", () => {
       const wrappedDocument = await wrapDocumentV4(document as any);
       expect(wrappedDocument["@context"]).toStrictEqual([
         "https://www.w3.org/2018/credentials/v1",
-        ContextUrl.v4_alpha,
+        ContextUrl.tt_v4_alpha,
         "https://w3id.org/traceability/v1",
       ]);
     });
@@ -44,7 +42,7 @@ describe("schema/4.0, plain vc", () => {
       const wrappedDocument = await wrapDocumentV4(document);
       expect(wrappedDocument["@context"]).toStrictEqual([
         "https://www.w3.org/2018/credentials/v1",
-        ContextUrl.v4_alpha,
+        ContextUrl.tt_v4_alpha,
         "https://w3id.org/traceability/v1",
       ]);
     });
@@ -57,7 +55,7 @@ describe("schema/4.0, plain vc", () => {
       const wrappedDocument = await wrapDocumentV4(document);
       expect(wrappedDocument["@context"]).toStrictEqual([
         "https://www.w3.org/2018/credentials/v1",
-        ContextUrl.v4_alpha,
+        ContextUrl.tt_v4_alpha,
         "https://w3id.org/traceability/v1",
       ]);
     });
@@ -102,7 +100,7 @@ describe("schema/4.0, vc with idvc", () => {
       const wrappedDocument = await wrapDocumentV4(document as any);
       expect(wrappedDocument["@context"]).toStrictEqual([
         "https://www.w3.org/2018/credentials/v1",
-        ContextUrl.v4_alpha,
+        ContextUrl.tt_v4_alpha,
         "https://w3id.org/traceability/v1",
       ]);
     });
@@ -112,7 +110,7 @@ describe("schema/4.0, vc with idvc", () => {
       const wrappedDocument = await wrapDocumentV4(document);
       expect(wrappedDocument["@context"]).toStrictEqual([
         "https://www.w3.org/2018/credentials/v1",
-        ContextUrl.v4_alpha,
+        ContextUrl.tt_v4_alpha,
         "https://w3id.org/traceability/v1",
       ]);
     });
@@ -125,7 +123,7 @@ describe("schema/4.0, vc with idvc", () => {
       const wrappedDocument = await wrapDocumentV4(document);
       expect(wrappedDocument["@context"]).toStrictEqual([
         "https://www.w3.org/2018/credentials/v1",
-        ContextUrl.v4_alpha,
+        ContextUrl.tt_v4_alpha,
         "https://w3id.org/traceability/v1",
       ]);
     });
