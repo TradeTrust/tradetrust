@@ -16,7 +16,7 @@ export const validateSchema = (document: any, validator: ValidateFunction, kind?
   // Need a better way to determine whether a document needs to be unwrapped first
   const valid = validator(
     (Array.isArray(document["@context"]) && document["@context"].includes(ContextUrl.tt_v4_alpha)) ||
-    (Array.isArray(document["@context"]) && document["@context"].includes(ContextUrl.oa_v4_alpha)) ||
+      (Array.isArray(document["@context"]) && document["@context"].includes(ContextUrl.oa_v4_alpha)) ||
       document.version === SchemaId.v3 ||
       kind === "raw"
       ? document

@@ -35,7 +35,7 @@ const sampleDoc: TradeTrustDocument = {
     renderMethodType: RenderMethodType.EmbeddedRenderer,
     name: "INVOICE",
     url: "https://generic-templates.tradetrust.io",
-  }
+  },
 };
 
 describe("digest v4.0", () => {

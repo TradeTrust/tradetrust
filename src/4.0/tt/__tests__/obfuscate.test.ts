@@ -7,7 +7,13 @@ import {
 } from "../../..";
 import { decodeSalt } from "../salt";
 import { toBuffer, isObfuscated, getObfuscatedData } from "../../../shared/utils";
-import { Salt, WrappedDocument, TradeTrustDocument, CredentialStatusType, IdentityProofType } from "../../../4.0/tt/types";
+import {
+  Salt,
+  WrappedDocument,
+  TradeTrustDocument,
+  CredentialStatusType,
+  IdentityProofType,
+} from "../../../4.0/tt/types";
 
 import ObfuscatedWrapped from "../../../../test/fixtures/v4/tt/did-wrapped-obfuscated.json";
 import NotObfuscatedWrapped from "../../../../test/fixtures/v4/tt/did-wrapped.json";

@@ -99,9 +99,9 @@ export const diagnose = ({
     "2.0": SchemaId.v2,
     "3.0": SchemaId.v3,
     "oa_4.0": SchemaId.oa_v4,
-    "tt_4.0": SchemaId.tt_v4
+    "tt_4.0": SchemaId.tt_v4,
   };
-  
+
   const errors = validate(
     document,
     getSchema(versionToSchemaId[version], mode === "non-strict" ? ajv : undefined),

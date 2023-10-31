@@ -41,7 +41,7 @@ const isValidRFC3986 = (str: any) => {
   return rfc3986.test(str);
 };
 
-let w3cDataModelUrl = "https://www.w3.org/2018/credentials/v1";
+const w3cDataModelUrl = "https://www.w3.org/2018/credentials/v1";
 const preloadedContextList = [w3cDataModelUrl, ContextUrl.oa_v4_alpha];
 const contexts: Map<string, Promise<any>> = new Map();
 const nodeDocumentLoader = documentLoaders.xhr ? documentLoaders.xhr() : documentLoaders.node();

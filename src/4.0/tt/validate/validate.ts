@@ -41,8 +41,7 @@ const isValidRFC3986 = (str: any) => {
   return rfc3986.test(str);
 };
 
-let w3cDataModelUrl = "https://www.w3.org/2018/credentials/v1";
-let traceabilityUrl = "https://w3id.org/traceability/v1";
+const w3cDataModelUrl = "https://www.w3.org/2018/credentials/v1";
 const preloadedContextList = [w3cDataModelUrl, ContextUrl.tt_v4_alpha];
 const contexts: Map<string, Promise<any>> = new Map();
 const nodeDocumentLoader = documentLoaders.xhr ? documentLoaders.xhr() : documentLoaders.node();

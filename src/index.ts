@@ -106,8 +106,7 @@ export const validateSchema = (document: WrappedDocument<any>): boolean => {
     return validate(document, getSchema(SchemaId.v3)).length === 0;
   else if (utils.isWrappedOAV4Document(document)) {
     return validate(document, getSchema(SchemaId.oa_v4)).length === 0;
-  }
-  else if (utils.isWrappedTTV4Document(document)) {
+  } else if (utils.isWrappedTTV4Document(document)) {
     return validate(document, getSchema(SchemaId.tt_v4)).length === 0;
   }
 

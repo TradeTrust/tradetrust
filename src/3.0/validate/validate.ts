@@ -3,7 +3,7 @@ import { WrappedDocument } from "../../3.0/types";
 import { documentLoaders, expand } from "@govtechsg/jsonld";
 import fetch from "cross-fetch";
 import w3cContextExamples from "../../shared/contexts/w3c-context-examples.json";
-import w3cDataModel from "../../shared/contexts/w3c-data-model-v1.json"
+import w3cDataModel from "../../shared/contexts/w3c-data-model-v1.json";
 
 const getId = (objectOrString: string | { id: string }): string => {
   if (typeof objectOrString === "string") {
@@ -41,8 +41,8 @@ const isValidRFC3986 = (str: any) => {
   return rfc3986.test(str);
 };
 
-let w3cExamplesContextUrl = "https://www.w3.org/2018/credentials/examples/v1";
-let w3cDataModelUrl = "https://www.w3.org/2018/credentials/v1";
+const w3cExamplesContextUrl = "https://www.w3.org/2018/credentials/examples/v1";
+const w3cDataModelUrl = "https://www.w3.org/2018/credentials/v1";
 const preloadedContextList = [
   w3cExamplesContextUrl,
   w3cDataModelUrl,

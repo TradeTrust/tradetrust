@@ -15,8 +15,6 @@ import {
 } from "../guard";
 import {
   __unsafe__use__it__at__your__own__risks__wrapDocument,
-  _unsafe_use_it_at_your_own_risk_v4_alpha_oa_wrapDocument,
-  _unsafe_use_it_at_your_own_risk_v4_alpha_tt_wrapDocument,
   SchemaId,
   signDocument,
   SUPPORTED_SIGNING_ALGORITHM,
