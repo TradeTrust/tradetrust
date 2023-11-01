@@ -24,7 +24,7 @@ const data: TradeTrustDocument = {
   "@context": [
     "https://www.w3.org/2018/credentials/v1",
     "https://www.w3.org/2018/credentials/examples/v1",
-    "http://localhost:8080/alpha-context.json",
+    "https://schemata.openattestation.com/io/tradetrust/4.0/alpha-context.json",
     "https://schemata.openattestation.com/com/openattestation/1.0/CustomContext.json",
   ],
   issuanceDate: "2010-01-01T19:23:24Z",

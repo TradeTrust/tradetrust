@@ -50,16 +50,14 @@ export enum SchemaId {
   v2 = "https://schema.openattestation.com/2.0/schema.json",
   v3 = "https://schema.openattestation.com/3.0/schema.json",
   oa_v4 = "https://schemata.openattestation.com/com/openattestation/4.0/alpha-schema.json",
-  // TTv4 = "https://schemata.openattestation.com/io/tradetrust/4.0/alpha-schema.json",
-  tt_v4 = "http://localhost:8080/alpha-schema.json",
+  tt_v4 = "https://schemata.openattestation.com/io/tradetrust/4.0/alpha-schema.json",
   // Note: Schema property is no longer placed in the OA v4
   // document
 }
 
 export enum ContextUrl {
   oa_v4_alpha = "https://schemata.openattestation.com/com/openattestation/4.0/alpha-context.json",
-  // tt_v4_alpha = "https://schemata.openattestation.com/io/tradetrust/4.0/alpha-context.json",
-  tt_v4_alpha = "http://localhost:8080/alpha-context.json",
+  tt_v4_alpha = "https://schemata.openattestation.com/io/tradetrust/4.0/alpha-context.json",
 }
 
 export const OpenAttestationHexString = String.withConstraint(

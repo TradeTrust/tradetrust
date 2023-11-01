@@ -22,7 +22,7 @@ import sampleWrappedSigned from "../../../../test/fixtures/v4/tt/did-wrapped-sig
 const documentDid = sample as TradeTrustDocument;
 
 const sampleTradeTrustDoc: TradeTrustDocument = {
-  "@context": ["https://www.w3.org/2018/credentials/v1", "http://localhost:8080/alpha-context.json"],
+  "@context": ["https://www.w3.org/2018/credentials/v1", "https://schemata.openattestation.com/io/tradetrust/4.0/alpha-context.json"],
   id: "http://example.edu/credentials/58473",
   type: ["VerifiableCredential", "TradeTrustCredential", "AlumniCredential"],
   issuer: {
