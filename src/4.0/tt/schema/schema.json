@@ -1,6 +1,6 @@
 {
   "title": "Tradetrust v4.0 Schema",
-  "$id": "http://localhost:8080/alpha-schema.json",
+  "$id": "https://schemata.openattestation.com/io/tradetrust/4.0/alpha-schema.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "definitions": {

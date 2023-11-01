@@ -15,7 +15,7 @@ describe("v4", () => {
     expect(Object.keys(proof).length).toBe(9);
     expect(proof.key).toBe("did:ethr:0xE712878f6E8d5d4F9e87E10DA604F9cB564C9a89#controller");
     expect(proof.signature).toBe(
-      "0x0830cbd0a56ffea5d94f56ce3aabb9ec4de9996bad1d35f63ca4795d09fb46807d532bc730578611750092a92621f0f0a89f78dcf2f33bc06361a80b417395641c"
+      "0x98f3d0f71671efc478eb3b3df7d301a520bcdcd8c08f9066ec8b8a4616ea397528d84f764462209f85659715501d7e2ddd63443653c77d6f66cc21331781b90e1b"
     );
   });
   it("should sign a document with a wallet", async () => {
@@ -30,7 +30,7 @@ describe("v4", () => {
     expect(Object.keys(proof).length).toBe(9);
     expect(proof.key).toBe("did:ethr:0x906FB815De8976b1e38D9a4C1014a3acE16Ce53C#controller");
     expect(proof.signature).toBe(
-      "0x3f1b55c7a822ea7bdbfb739eb818fa91e4086dc60b616dec32fd0d32b584beed504531d93e36c808941ed04c7a2c3f252795671fd8201b27fea51c2f8ea9c2f91b"
+      "0x3e487607cfcf536e1fd912161fc67ac7306fe6246999760c929c94bf125992614d24a0f39ebb690bb1d5fd02dca7cb78d06aa012f3c907ba7a8e5add80f42c5f1b"
     );
   });
 
