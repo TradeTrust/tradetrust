@@ -1,5 +1,4 @@
-![Release]
-(https://github.com/TradeTrust/open-attestation/actions/workflows/release.yml/badge.svg)
+![Release](https://github.com/TradeTrust/open-attestation/actions/workflows/release.yml/badge.svg)
 
 # Open Attestation
 
