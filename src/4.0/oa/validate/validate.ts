@@ -1,8 +1,9 @@
-import { OpenAttestationDocument } from "../../__generated__/schema.4.0";
-import { WrappedDocument } from "../../4.0/types";
-import { ContextUrl } from "../../shared/@types/document";
+import { OpenAttestationDocument } from "../../../__generated__/oa-schema.4.0";
+import { WrappedDocument } from "../types";
+import { ContextUrl } from "../../../shared/@types/document";
 import { documentLoaders, expand } from "@govtechsg/jsonld";
 import fetch from "cross-fetch";
+import w3cDataModel from "../../../shared/contexts/w3c-data-model-v1.json";
 
 const getId = (objectOrString: string | { id: string }): string => {
   if (typeof objectOrString === "string") {
@@ -40,7 +41,8 @@ const isValidRFC3986 = (str: any) => {
   return rfc3986.test(str);
 };
 
-const preloadedContextList = ["https://www.w3.org/2018/credentials/v1", ContextUrl.v4_alpha];
+const w3cDataModelUrl = "https://www.w3.org/2018/credentials/v1";
+const preloadedContextList = [w3cDataModelUrl, ContextUrl.oa_v4_alpha];
 const contexts: Map<string, Promise<any>> = new Map();
 const nodeDocumentLoader = documentLoaders.xhr ? documentLoaders.xhr() : documentLoaders.node();
 let preload = true;
@@ -49,10 +51,17 @@ const documentLoader = async (url: string) => {
   if (preload) {
     preload = false;
     for (const url of preloadedContextList) {
-      contexts.set(
-        url,
-        fetch(url, { headers: { accept: "application/json" } }).then((res: any) => res.json())
-      );
+      // resolve the w3c data model context to the local
+      // file within the repo, otherwise, w3c would throttle
+      // these contexts after a set number of requests.
+      if (url === w3cDataModelUrl) {
+        contexts.set(url, Promise.resolve(w3cDataModel));
+      } else {
+        contexts.set(
+          url,
+          fetch(url, { headers: { accept: "application/json" } }).then((res: any) => res.json())
+        );
+      }
     }
   }
   if (contexts.get(url)) {

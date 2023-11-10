@@ -10,9 +10,12 @@ import * as v3 from "../../__generated__/schema.3.0";
 import { WrappedDocument as WrappedDocumentV3 } from "../../3.0/types";
 import { OpenAttestationDocument as OpenAttestationDocumentV3 } from "../../__generated__/schema.3.0";
 
-import * as v4 from "../../__generated__/schema.4.0";
-import { WrappedDocument as WrappedDocumentV4 } from "../../4.0/types";
-import { OpenAttestationDocument as OpenAttestationDocumentV4 } from "../../__generated__/schema.4.0";
+import * as TTv4 from "../../__generated__/tt-schema.4.0";
+import * as OAv4 from "../../__generated__/oa-schema.4.0";
+import { WrappedDocument as OAWrappedDocumentV4 } from "../../4.0/oa/types";
+import { WrappedDocument as TTWrappedDocumentV4 } from "../../4.0/tt/types";
+import { OpenAttestationDocument as OpenAttestationDocumentV4 } from "../../__generated__/oa-schema.4.0";
+import { TradeTrustDocument as TradeTrustDocumentV4 } from "../../__generated__/tt-schema.4.0";
 
 import { OpenAttestationDocument, WrappedDocument } from "../@types/document";
 import {
@@ -20,8 +23,10 @@ import {
   isWrappedV2Document,
   isRawV3Document,
   isWrappedV3Document,
-  isRawV4Document,
-  isWrappedV4Document,
+  isRawOAV4Document,
+  isWrappedOAV4Document,
+  isRawTTV4Document,
+  isWrappedTTV4Document,
 } from "./guard";
 
 export type Hash = string | Buffer;
@@ -103,7 +108,8 @@ export function getIssuerAddress(document: any): any {
 export const getMerkleRoot = (document: any): string => {
   if (isWrappedV2Document(document)) return document.signature.merkleRoot;
   else if (isWrappedV3Document(document)) return document.proof.merkleRoot;
-  else if (isWrappedV4Document(document)) return document.proof.merkleRoot;
+  else if (isWrappedOAV4Document(document)) return document.proof.merkleRoot;
+  else if (isWrappedTTV4Document(document)) return document.proof.merkleRoot;
 
   throw new Error(
     "Unsupported document type: Only can retrieve merkle root from wrapped OpenAttestation v2, v3 & v4 documents."
@@ -113,7 +119,8 @@ export const getMerkleRoot = (document: any): string => {
 export const getTargetHash = (document: any): string => {
   if (isWrappedV2Document(document)) return document.signature.targetHash;
   else if (isWrappedV3Document(document)) return document.proof.targetHash;
-  else if (isWrappedV4Document(document)) return document.proof.targetHash;
+  else if (isWrappedOAV4Document(document)) return document.proof.targetHash;
+  else if (isWrappedTTV4Document(document)) return document.proof.targetHash;
 
   throw new Error(
     "Unsupported document type: Only can retrieve target hash from wrapped OpenAttestation v2, v3 & v4 documents."
@@ -131,7 +138,9 @@ export const getTemplateURL = (document: any): string | undefined => {
     else return document.$template?.url;
   } else if (isRawV3Document(document) || isWrappedV3Document(document)) {
     return document.openAttestationMetadata.template?.url;
-  } else if (isRawV4Document(document) || isWrappedV4Document(document)) {
+  } else if (isRawOAV4Document(document) || isWrappedOAV4Document(document)) {
+    return document.renderMethod?.url;
+  } else if (isRawTTV4Document(document) || isWrappedTTV4Document(document)) {
     return document.renderMethod?.url;
   }
 
@@ -141,7 +150,7 @@ export const getTemplateURL = (document: any): string | undefined => {
 };
 
 export const getDocumentData = (document: WrappedDocument<OpenAttestationDocument>): OpenAttestationDocument => {
-  if (isWrappedV3Document(document) || isWrappedV4Document(document)) {
+  if (isWrappedV3Document(document) || isWrappedOAV4Document(document) || isWrappedTTV4Document(document)) {
     const omit = (keys: any, obj: any): any =>
       Object.fromEntries(Object.entries(obj).filter(([k]) => !keys.includes(k)));
     return omit(["proof"], document);
@@ -184,13 +193,23 @@ export const isDocumentRevokable = (document: any): boolean => {
       !!document.openAttestationMetadata.proof.value;
 
     return isDocumentStoreRevokableV3 || isDidRevokableV3;
-  } else if (isWrappedV4Document(document)) {
+  } else if (isWrappedOAV4Document(document)) {
     const isDidRevokableV4 =
-      document.issuer.identityProof.identityProofType === v4.IdentityProofType.DNSDid
-        ? document.credentialStatus.credentialStatusType === v4.CredentialStatusType.OcspResponder ||
-          document.credentialStatus.credentialStatusType === v4.CredentialStatusType.RevocationStore
+      document.issuer.identityProof.identityProofType === OAv4.IdentityProofType.DNSDid
+        ? document.credentialStatus.credentialStatusType === OAv4.CredentialStatusType.OcspResponder ||
+          document.credentialStatus.credentialStatusType === OAv4.CredentialStatusType.RevocationStore
         : false;
     // TODO: OA v4 issuer schema not updated to support document store issuance yet
+    // const isDocumentStoreRevokableV4 = ?
+
+    return isDidRevokableV4;
+  } else if (isWrappedTTV4Document(document)) {
+    const isDidRevokableV4 =
+      document.issuer.identityProof.identityProofType === TTv4.IdentityProofType.DNSDid
+        ? document.credentialStatus.credentialStatusType === TTv4.CredentialStatusType.OcspResponder ||
+          document.credentialStatus.credentialStatusType === TTv4.CredentialStatusType.RevocationStore
+        : false;
+    // TODO: TT v4 issuer schema not updated to support document store issuance yet
     // const isDocumentStoreRevokableV4 = ?
 
     return isDidRevokableV4;
@@ -225,13 +244,16 @@ export const isObfuscated = (
   document:
     | WrappedDocumentV2<OpenAttestationDocumentV2>
     | WrappedDocumentV3<OpenAttestationDocumentV3>
-    | WrappedDocumentV4<OpenAttestationDocumentV4>
+    | OAWrappedDocumentV4<OpenAttestationDocumentV4>
+    | TTWrappedDocumentV4<TradeTrustDocumentV4>
 ): boolean => {
   if (isWrappedV2Document(document)) {
     return !!document.privacy?.obfuscatedData?.length;
   } else if (isWrappedV3Document(document)) {
     return !!document.proof.privacy.obfuscated.length;
-  } else if (isWrappedV4Document(document)) {
+  } else if (isWrappedOAV4Document(document)) {
+    return !!document.proof.privacy.obfuscated.length;
+  } else if (isWrappedTTV4Document(document)) {
     return !!document.proof.privacy.obfuscated.length;
   }
 
@@ -244,13 +266,16 @@ export const getObfuscatedData = (
   document:
     | WrappedDocumentV2<OpenAttestationDocumentV2>
     | WrappedDocumentV3<OpenAttestationDocumentV3>
-    | WrappedDocumentV4<OpenAttestationDocumentV4>
+    | OAWrappedDocumentV4<OpenAttestationDocumentV4>
+    | TTWrappedDocumentV4<TradeTrustDocumentV4>
 ): string[] => {
   if (isWrappedV2Document(document)) {
     return document.privacy?.obfuscatedData || [];
   } else if (isWrappedV3Document(document)) {
     return document.proof.privacy.obfuscated || [];
-  } else if (isWrappedV4Document(document)) {
+  } else if (isWrappedOAV4Document(document)) {
+    return document.proof.privacy.obfuscated || [];
+  } else if (isWrappedTTV4Document(document)) {
     return document.proof.privacy.obfuscated || [];
   }
 

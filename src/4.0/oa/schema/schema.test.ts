@@ -1,9 +1,9 @@
 /* eslint-disable jest/no-try-expect,jest/no-conditional-expect */
 import { cloneDeep } from "lodash";
-import { _unsafe_use_it_at_your_own_risk_v4_alpha_wrapDocument as wrapDocumentV4 } from "../../index";
-import sample from "../../../test/fixtures/v4/did-raw.json";
-import { ContextUrl } from "../../shared/@types/document";
-import { OpenAttestationDocument } from "../../__generated__/schema.4.0";
+import { _unsafe_use_it_at_your_own_risk_v4_alpha_oa_wrapDocument as wrapDocumentV4 } from "../../../index";
+import sample from "../../../../test/fixtures/v4/oa/did-raw.json";
+import { ContextUrl } from "../../../shared/@types/document";
+import { OpenAttestationDocument } from "../../../__generated__/oa-schema.4.0";
 
 const sampleVc = sample as OpenAttestationDocument;
 
@@ -31,7 +31,7 @@ describe("schema/4.0", () => {
       const wrappedDocument = await wrapDocumentV4(document as any);
       expect(wrappedDocument["@context"]).toStrictEqual([
         "https://www.w3.org/2018/credentials/v1",
-        ContextUrl.v4_alpha,
+        ContextUrl.oa_v4_alpha,
         "https://w3id.org/traceability/v1",
       ]);
     });
@@ -41,7 +41,7 @@ describe("schema/4.0", () => {
       const wrappedDocument = await wrapDocumentV4(document);
       expect(wrappedDocument["@context"]).toStrictEqual([
         "https://www.w3.org/2018/credentials/v1",
-        ContextUrl.v4_alpha,
+        ContextUrl.oa_v4_alpha,
         "https://w3id.org/traceability/v1",
       ]);
     });
@@ -54,7 +54,7 @@ describe("schema/4.0", () => {
       const wrappedDocument = await wrapDocumentV4(document);
       expect(wrappedDocument["@context"]).toStrictEqual([
         "https://www.w3.org/2018/credentials/v1",
-        ContextUrl.v4_alpha,
+        ContextUrl.oa_v4_alpha,
         "https://w3id.org/traceability/v1",
       ]);
     });

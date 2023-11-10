@@ -1,5 +1,5 @@
-import { OpenAttestationDocument } from "../__generated__/schema.4.0";
-import { toBuffer } from "../shared/utils";
+import { OpenAttestationDocument } from "../../__generated__/oa-schema.4.0";
+import { toBuffer } from "../../shared/utils";
 import { WrappedDocument } from "./types";
 import { cloneDeep, get, unset, pick } from "lodash";
 import { decodeSalt, encodeSalt } from "./salt";
