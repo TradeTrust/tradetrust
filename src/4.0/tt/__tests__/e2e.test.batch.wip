@@ -1,0 +1,56 @@
+README, for now v4-alpha only supports DID issuance
+and since it doesnt make sense for batching of DID issuance
+since issuance of DID documents is essentially free,
+these tests have not been implemented.
+
+describe("Issuing a batch of documents", () => {
+    test("fails if there is a malformed document", async () => {
+      const malformedDatum = [
+        ...datum,
+        // @ts-expect-error missing properties from OpenAttestationCredential: "@context", credentialSubject, issuanceDate, issuer, and 2 more.
+        {
+          laurent: "task force, assemble!!",
+        } as WrappedDocument,
+      ];
+      await expect(wrapDocuments(malformedDatum)).rejects.toThrow("Invalid document");
+    });
+    test("creates a batch of documents if all are in the right format", async () => {
+      const wrappedDocuments = await wrapDocuments(datum, {
+        externalSchemaId: "http://example.com/schema.json",
+        version: SchemaId.v3,
+      });
+      wrappedDocuments.forEach((doc, i: number) => {
+        expect(doc.proof.type).toBe("TradeTrustMerkleProofSignature2018");
+        expect(doc.key1).toEqual(expect.stringContaining(datum[i].key1));
+        expect(doc.proof.targetHash).toBeDefined();
+        expect(doc.proof.merkleRoot).toBeDefined();
+        expect(doc.proof.proofs.length).toEqual(2);
+      });
+    });
+    test("checks that documents are wrapped correctly", async () => {
+      const wrappedDocuments = await wrapDocuments(datum, {
+        externalSchemaId: "http://example.com/schema.json",
+        version: SchemaId.v3,
+      });
+      const verified = wrappedDocuments.reduce((prev, curr) => verifySignature(curr) && prev, true);
+      expect(verified).toBe(true);
+    });
+    test("checks that documents conforms to the schema", async () => {
+      const wrappedDocuments = await wrapDocuments(datum, {
+        externalSchemaId: "http://example.com/schema.json",
+        version: SchemaId.v3,
+      });
+      const validatedSchema = wrappedDocuments.reduce((prev: boolean, curr: any) => validateSchema(curr) && prev, true);
+      expect(validatedSchema).toBe(true);
+    });
+    test("does not allow for same merkle root to be generated", async () => {
+      const wrappedDocuments = await wrapDocuments(datum, {
+        externalSchemaId: "http://example.com/schema.json",
+        version: SchemaId.v3,
+      });
+      const newWrappedDocuments = await wrapDocuments(datum, {
+        version: SchemaId.v3,
+      });
+      expect(wrappedDocuments[0].proof.merkleRoot).not.toBe(newWrappedDocuments[0].proof.merkleRoot);
+    });
+  });

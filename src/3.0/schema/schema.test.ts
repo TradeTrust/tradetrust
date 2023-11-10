@@ -85,7 +85,7 @@ describe("schema/3.0", () => {
   describe("id", () => {
     it("should be valid when id is missing", async () => {
       // id can be optional, see https://www.w3.org/TR/vc-data-model/#identifiers
-      const document = { ...omit(cloneDeep(sampleDoc), "id") };
+      const document = { ...omit(cloneDeep(sampleDoc), "id") } as OpenAttestationDocument;
       const wrappedDocument = await wrapDocument(document, {
         externalSchemaId: $id,
         version: SchemaId.v3,
@@ -123,7 +123,7 @@ describe("schema/3.0", () => {
     it("should be valid if reference is missing", async () => {
       // For now, reference is not compulsory
       expect.assertions(1);
-      const document = { ...omit(cloneDeep(sampleDoc), "reference") };
+      const document = { ...omit(cloneDeep(sampleDoc), "reference") } as OpenAttestationDocument;
       const wrappedDocument = await wrapDocument(document, {
         externalSchemaId: $id,
         version: SchemaId.v3,
@@ -164,7 +164,7 @@ describe("schema/3.0", () => {
     it("should be valid if name is missing", async () => {
       // For now, it's not compulsory
       expect.assertions(1);
-      const document = { ...omit(cloneDeep(sampleDoc), "name") };
+      const document = { ...omit(cloneDeep(sampleDoc), "name") } as OpenAttestationDocument;
       const wrappedDocument = await wrapDocument(document, {
         externalSchemaId: $id,
         version: SchemaId.v3,
@@ -258,7 +258,7 @@ describe("schema/3.0", () => {
     it("should be valid if validFrom is missing", async () => {
       // For now, it's not compulsory and is reserved for a later version of W3C VC Data Model, see https://www.w3.org/TR/vc-data-model/#issuance-date
       expect.assertions(1);
-      const document = { ...omit(cloneDeep(sampleDoc), "validFrom") };
+      const document = { ...omit(cloneDeep(sampleDoc), "validFrom") } as OpenAttestationDocument;
       const wrappedDocument = await wrapDocument(document, {
         externalSchemaId: $id,
         version: SchemaId.v3,
@@ -315,7 +315,7 @@ describe("schema/3.0", () => {
     it("should be valid when validUntil is missing", async () => {
       // validUntil does not exist in our sample document anyways
       expect.assertions(1);
-      const document = { ...omit(cloneDeep(sampleDoc), "validUntil") };
+      const document = { ...omit(cloneDeep(sampleDoc), "validUntil") } as OpenAttestationDocument;
       const wrappedDocument = await wrapDocument(document, {
         externalSchemaId: $id,
         version: SchemaId.v3,
@@ -407,7 +407,9 @@ describe("schema/3.0", () => {
     });
     it("should be invalid if template.name is missing", async () => {
       expect.assertions(1);
-      const document = { ...omit(cloneDeep(sampleDoc), "openAttestationMetadata.template.name") };
+      const document = {
+        ...omit(cloneDeep(sampleDoc), "openAttestationMetadata.template.name"),
+      } as OpenAttestationDocument;
       await expect(wrapDocument(document, { externalSchemaId: $id, version: SchemaId.v3 })).rejects.toHaveProperty(
         "validationErrors",
         [
@@ -423,7 +425,9 @@ describe("schema/3.0", () => {
     });
     it("should be invalid if template.type is missing", async () => {
       expect.assertions(1);
-      const document = { ...omit(cloneDeep(sampleDoc), "openAttestationMetadata.template.type") };
+      const document = {
+        ...omit(cloneDeep(sampleDoc), "openAttestationMetadata.template.type"),
+      } as OpenAttestationDocument;
       await expect(wrapDocument(document, { externalSchemaId: $id, version: SchemaId.v3 })).rejects.toHaveProperty(
         "validationErrors",
         [

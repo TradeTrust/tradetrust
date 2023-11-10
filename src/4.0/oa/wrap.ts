@@ -1,14 +1,14 @@
-import { hashToBuffer, isStringArray, SchemaValidationError } from "../shared/utils";
-import { MerkleTree } from "../shared/merkle";
-import { ContextUrl, SchemaId } from "../shared/@types/document";
+import { hashToBuffer, isStringArray, SchemaValidationError } from "../../shared/utils";
+import { MerkleTree } from "../../shared/merkle";
+import { ContextUrl, SchemaId } from "../../shared/@types/document";
 import { WrappedDocument } from "./types";
-import { digestCredential } from "../4.0/digest";
-import { validateSchema as validate } from "../shared/validate";
-import { WrapDocumentOptionV4 } from "../shared/@types/wrap";
-import { OpenAttestationDocument } from "../__generated__/schema.4.0";
+import { digestCredential } from "../../4.0/oa/digest";
+import { validateSchema as validate } from "../../shared/validate";
+import { WrapDocumentOptionV4 } from "../../shared/@types/wrap";
+import { OpenAttestationDocument } from "../../__generated__/oa-schema.4.0";
 import { encodeSalt, salt } from "./salt";
 import { validateW3C } from "./validate";
-import { getSchema } from "../shared/ajv";
+import { getSchema } from "../../shared/ajv";
 
 export const wrapDocument = async <T extends OpenAttestationDocument>(
   credential: T,
@@ -18,7 +18,7 @@ export const wrapDocument = async <T extends OpenAttestationDocument>(
 
   // 1. Ensure that required @contexts are present and in the correct order
   // @context: [Base, OA, ...]
-  const contexts = new Set(["https://www.w3.org/2018/credentials/v1", ContextUrl.v4_alpha]);
+  const contexts = new Set(["https://www.w3.org/2018/credentials/v1", ContextUrl.oa_v4_alpha]);
 
   if (typeof document["@context"] === "string") {
     contexts.add(document["@context"]);
@@ -67,7 +67,7 @@ export const wrapDocument = async <T extends OpenAttestationDocument>(
     },
   };
 
-  const errors = validate(verifiableCredential, getSchema(SchemaId.v4));
+  const errors = validate(verifiableCredential, getSchema(SchemaId.oa_v4));
   if (errors.length > 0) {
     throw new SchemaValidationError("Invalid document", errors, verifiableCredential);
   }

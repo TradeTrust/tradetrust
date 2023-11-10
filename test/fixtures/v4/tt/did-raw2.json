@@ -1,0 +1,76 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://schemata.openattestation.com/io/tradetrust/4.0/alpha-context.json"
+  ],
+  "type": ["VerifiableCredential", "TradeTrustCredential"],
+  "validFrom": "2021-03-08T12:00:00+08:00",
+  "issuer": {
+    "id": "did:ethr:0xE712878f6E8d5d4F9e87E10DA604F9cB564C9a89",
+    "type": "TradeTrustIssuer",
+    "name": "My Own Company Pte Ltd",
+    "identityProof": {
+      "identityProofType": "DNS-DID",
+      "identifier": "example.tradetrust.io"
+    }
+  },
+  "credentialStatus": {
+    "type": "TradeTrustCredentialStatus",
+    "credentialStatusType": "NONE"
+  },
+  "renderMethod": {
+    "type": "TradeTrustRenderMethod",
+    "renderMethodType": "EMBEDDED_RENDERER",
+    "name": "INVOICE",
+    "url": "https://generic-templates.tradetrust.io"
+  },
+  "credentialSubject": {
+    "name": "TradeTrust Invoice",
+    "id": "urn:uuid:a013fb9d-bb03-4056-b696-05575eceaf42",
+    "date": "2018-02-21",
+    "customerId": "564",
+    "terms": "Due Upon Receipt",
+    "billFrom": {
+      "name": "ABC Company",
+      "streetAddress": "Level 1, Industry Offices",
+      "city": "Singapore",
+      "postalCode": "123456",
+      "phoneNumber": "60305029"
+    },
+    "billTo": {
+      "company": {
+        "name": "DEF Company",
+        "streetAddress": "Level 2, Industry Offices",
+        "city": "Singapore",
+        "postalCode": "612345",
+        "phoneNumber": "61204028"
+      },
+      "name": "James Lee",
+      "email": "def@company.com"
+    },
+    "billableItems": [
+      {
+        "description": "Service Fee",
+        "quantity": "1",
+        "unitPrice": "200",
+        "amount": "200"
+      },
+      {
+        "description": "Labor: 5 hours at $75/hr",
+        "quantity": "5",
+        "unitPrice": "75",
+        "amount": "375"
+      },
+      {
+        "description": "New client discount",
+        "quantity": "1",
+        "unitPrice": "50",
+        "amount": "50"
+      }
+    ],
+    "subtotal": "625",
+    "tax": "0",
+    "taxTotal": "0",
+    "total": "625"
+  }
+}
