@@ -13,7 +13,7 @@ The [Open Attestation](https://github.com/TradeTrust/open-attestation) repositor
 ## Installation
 
 ```bash
-npm i @tradetrust/open-attestation
+npm i @tradetrust-tt/tradetrust
 ```
 
 ---
@@ -31,7 +31,7 @@ See [Additional Information](#additional-information) for information on using e
 The `wrapDocument` function is identical but accepts only one document.
 
 ```js
-import { wrapDocuments } from "@tradetrust/open-attestation";
+import { wrapDocuments } from "@tradetrust-tt/tradetrust";
 const document = {
   id: "SERIAL_NUMBER_123",
   $template: {
@@ -86,7 +86,7 @@ console.log(wrappedDocuments);
 #### Example with public/private key pair
 
 ```js
-import { signDocument, SUPPORTED_SIGNING_ALGORITHM } from "@tradetrust/open-attestation";
+import { signDocument, SUPPORTED_SIGNING_ALGORITHM } from "@tradetrust-tt/tradetrust";
 await signDocument(wrappedV2Document, SUPPORTED_SIGNING_ALGORITHM.Secp256k1VerificationKey2018, {
   public: "did:ethr:0xE712878f6E8d5d4F9e87E10DA604F9cB564C9a89#controller",
   private: "0x497c85ed89f1874ba37532d1e33519aba15bd533cdcb90774cc497bfe3cde655",
@@ -96,7 +96,7 @@ await signDocument(wrappedV2Document, SUPPORTED_SIGNING_ALGORITHM.Secp256k1Verif
 #### Example with signer
 
 ```js
-import { signDocument, SUPPORTED_SIGNING_ALGORITHM } from "@tradetrust/open-attestation";
+import { signDocument, SUPPORTED_SIGNING_ALGORITHM } from "@tradetrust-tt/tradetrust";
 import { Wallet } from "ethers";
 
 const wallet = Wallet.fromMnemonic("tourist quality multiply denial diary height funny calm disease buddy speed gold");
@@ -112,7 +112,7 @@ const { proof } = await signDocument(
 `validateSchema` checks that the document conforms to open attestation data structure.
 
 ```js
-import { validateSchema } from "@tradetrust/open-attestation";
+import { validateSchema } from "@tradetrust-tt/tradetrust";
 const validatedSchema = validateSchema(wrappedDocument);
 console.log(validatedSchema);
 ```
@@ -124,7 +124,7 @@ console.log(validatedSchema);
 Note that this method does not check against the blockchain or any registry if this document has been published. The merkle root of this document need to be checked against a publicly accessible document store (can be a smart contract on the blockchain).
 
 ```js
-import { verifySignature } from "@tradetrust/open-attestation";
+import { verifySignature } from "@tradetrust-tt/tradetrust";
 const verified = verifySignature(wrappedDocument);
 console.log(verified);
 ```
@@ -134,7 +134,7 @@ console.log(verified);
 `getData` returns the original data stored in the document, in a readable format.
 
 ```js
-import { getData } from "@tradetrust/open-attestation";
+import { getData } from "@tradetrust-tt/tradetrust";
 const data = getData(wrappedDocument);
 console.log(data);
 ```
@@ -142,7 +142,7 @@ console.log(data);
 ### Utils
 
 ```js
-import { utils } from "@tradetrust/open-attestation";
+import { utils } from "@tradetrust-tt/tradetrust";
 utils.isWrappedV3Document(document);
 ```
 
@@ -179,7 +179,7 @@ npm run test
 - We are currently building a new version of the schema, compatible with W3C VC. This is very experimental and whatever is available for v2 documents are also available for v4 documents:
   - [OA schema v4](https://schemata.openattestation.com/io/tradetrust/4.0/alpha-schema.json)
   - [TT schema v4](https://schemata.openattestation.com/com/openattestation/4.0/alpha-schema.json)
-  - Typings: `import {OAv4, TTv4} from "@tradetrust/open-attestation"`.
+  - Typings: `import {OAv4, TTv4} from "@tradetrust-tt/tradetrust"`.
   - Type guard: `utils.isWrappedOAV4Document`, `utils.isWrappedTTV4Document`.
   - Wrapping: `_unsafe_use_it_at_your_own_risk_v4_alpha_oa_wrapDocument`, `_unsafe_use_it_at_your_own_risk_v4_alpha_tt_wrapDocument`
   - Example docs in `tests/fixtures/v4`
