@@ -24,8 +24,8 @@ const data: TradeTrustDocument = {
   "@context": [
     "https://www.w3.org/2018/credentials/v1",
     "https://www.w3.org/2018/credentials/examples/v1",
-    "https://schemata.openattestation.com/io/tradetrust/4.0/alpha-context.json",
-    "https://schemata.openattestation.com/com/openattestation/1.0/CustomContext.json",
+    "https://schemata.tradetrust.io/io/tradetrust/4.0/alpha-context.json",
+    "https://schemata.tradetrust.io/com/openattestation/1.0/CustomContext.json",
   ],
   issuanceDate: "2010-01-01T19:23:24Z",
   name: "document owner name",
@@ -284,7 +284,7 @@ describe("privacy", () => {
     test("should return array of hashes when there is obfuscated data in document v4", () => {
       const obfuscatedData = getObfuscatedData(documentObfuscatedV4);
       expect(obfuscatedData.length).toBe(1);
-      expect(obfuscatedData?.[0]).toBe("9e1e02a3e73cde8796839caac22c98379ed04a815ee9b80a9ee46e0ef251aa22");
+      expect(obfuscatedData?.[0]).toBe("79c4ca33f12826311cd411b3e3ccd533c564a761e8fa61afdd685e2c6657a4ac");
     });
   });
 
