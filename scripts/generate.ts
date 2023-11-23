@@ -58,7 +58,9 @@ const run = async ({ location, keys }: IRun) => {
 async function main() {
   const paths = [
     "./test/fixtures/v4/tt/did-idvc-raw.json",
+    "./test/fixtures/v4/tt/did-raw-idvc-invalid.json",
     "./test/fixtures/v4/tt/did-idvc-raw-idvc-revoked.json",
+    "./test/fixtures/v4/tt/did-idvc-raw-missing-idvc.json",
     "./test/fixtures/v4/tt/did-idvc-raw-tampered-signature.json",
     "./test/fixtures/v4/tt/did-idvc-raw-wrong-binding.json",
     "./test/fixtures/v4/tt/did-raw.json",
@@ -66,7 +68,10 @@ async function main() {
   ];
 
   await paths.forEach((path) => {
-    if (path === "./test/fixtures/v4/tt/did-raw2.json") {
+    if (
+      path === "./test/fixtures/v4/tt/did-raw2.json" ||
+      path === "./test/fixtures/v4/tt/did-idvc-raw-wrong-binding.json"
+    ) {
       run({
         location: path,
         keys: [
