@@ -177,8 +177,8 @@ npm run test
 
 - Found a bug? Have a question? Want to share an idea? Reach us at our [Github repository](https://github.com/Open-Attestation/open-attestation).
 - We are currently building a new version of the schema, compatible with W3C VC. This is very experimental and whatever is available for v2 documents are also available for v4 documents:
-  - [OA schema v4](https://schemata.openattestation.com/io/tradetrust/4.0/alpha-schema.json)
-  - [TT schema v4](https://schemata.tradetrust.io/com/openattestation/4.0/alpha-schema.json)
+  - [OA schema v4](https://schemata.openattestation.com/com/openattestation/4.0/alpha-schema.json)
+  - [TT schema v4](https://schemata.tradetrust.io/io/tradetrust/4.0/alpha-schema.json)
   - Typings: `import {OAv4, TTv4} from "@tradetrust-tt/tradetrust"`.
   - Type guard: `utils.isWrappedOAV4Document`, `utils.isWrappedTTV4Document`.
   - Wrapping: `_unsafe_use_it_at_your_own_risk_v4_alpha_oa_wrapDocument`, `_unsafe_use_it_at_your_own_risk_v4_alpha_tt_wrapDocument`
