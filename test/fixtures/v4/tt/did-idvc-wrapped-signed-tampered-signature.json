@@ -3,10 +3,7 @@
     "https://www.w3.org/2018/credentials/v1",
     "https://schemata.tradetrust.io/io/tradetrust/4.0/alpha-context.json"
   ],
-  "type": [
-    "VerifiableCredential",
-    "TradeTrustCredential"
-  ],
+  "type": ["VerifiableCredential", "TradeTrustCredential"],
   "validFrom": "2021-03-08T12:00:00+08:00",
   "issuer": {
     "id": "did:ethr:0xE94E4f16ad40ADc90C29Dc85b42F1213E034947C",
@@ -25,16 +22,12 @@
             "https://w3id.org/vc/status-list/2021/v1"
           ],
           "id": "https://sbl.alwaysdata.net/oa/credentials/123456789",
-          "type": [
-            "VerifiableCredential"
-          ],
+          "type": ["VerifiableCredential"],
           "issuer": "did:web:sbl.alwaysdata.net:oa",
           "credentialSubject": {
             "uen": "198801234E",
             "companyname": "My Own Company Pte Ltd",
-            "type": [
-              "CorporateBasicDetails"
-            ],
+            "type": ["CorporateBasicDetails"],
             "id": "did:ethr:0xE94E4f16ad40ADc90C29Dc85b42F1213E034947C"
           },
           "expirationDate": "2023-11-01T06:45:43Z",
