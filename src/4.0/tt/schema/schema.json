@@ -180,12 +180,11 @@
             },
             "credentialStatusType": {
               "type": "string",
-              "enum": ["REVOCATION_STORE", "OCSP_RESPONDER"]
+              "enum": ["REVOCATION_STORE", "OCSP_RESPONDER", "TOKEN_REGISTRY"]
             },
             "location": {
               "type": "string",
-              "format": "uri",
-              "examples": ["https://ocsp-responder.example.com"]
+              "examples": ["https://ocsp-responder.example.com", "0x0000000000000000000000000000000000000000"]
             }
           },
           "required": ["credentialStatusType", "location"],

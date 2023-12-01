@@ -97,9 +97,9 @@ export function getIssuerAddress(document: any): any {
     return document.openAttestationMetadata.proof.value;
   }
   // TODO: OA v4 proof schema not updated to support document store issuance yet
-  // else if (isWrappedV4Document(document)) {
-  //   return document.proof.?
-  // }
+  else if (isWrappedTTV4Document(document)) {
+    return document.credentialStatus.location;
+  }
   throw new Error(
     "Unsupported document type: Only can retrieve issuer address from wrapped OpenAttestation v2 & v3 documents."
   );
@@ -166,7 +166,8 @@ export const getDocumentData = (document: WrappedDocument<OpenAttestationDocumen
 export const isTransferableAsset = (document: any): boolean => {
   return (
     !!getData(document)?.issuers[0]?.tokenRegistry ||
-    document?.openAttestationMetadata?.proof?.method === "TOKEN_REGISTRY"
+    document?.openAttestationMetadata?.proof?.method === "TOKEN_REGISTRY" ||
+    document?.credentialStatus?.credentialStatusType === "TOKEN_REGISTRY"
   );
 };
 
