@@ -441,13 +441,14 @@ describe("schema/2.0", () => {
   });
   describe("template", () => {
     it("should be valid without $template (will use default view)", () => {
-      const wrappedDocument = wrapDocument(omit(cloneDeep(openAttestationDocument), "$template"));
+      const documentWithoutTemplate = omit(cloneDeep(openAttestationDocument), "$template") as OpenAttestationDocument;
+      const wrappedDocument = wrapDocument(documentWithoutTemplate);
       expect(wrappedDocument.version).toBe(SchemaId.v2);
     });
     it("should not be valid if $template does not have name", () => {
       expect.assertions(2);
 
-      const document = omit(cloneDeep(openAttestationDocument), "$template.name");
+      const document = omit(cloneDeep(openAttestationDocument), "$template.name") as OpenAttestationDocument;
       try {
         wrapDocument(document);
       } catch (e) {
@@ -471,7 +472,7 @@ describe("schema/2.0", () => {
     it("should not be valid if $template does not have type", () => {
       expect.assertions(2);
 
-      const document = omit(cloneDeep(openAttestationDocument), "$template.type");
+      const document = omit(cloneDeep(openAttestationDocument), "$template.type") as OpenAttestationDocument;
       try {
         wrapDocument(document);
       } catch (e) {
@@ -527,13 +528,14 @@ describe("schema/2.0", () => {
   });
   describe("attachments", () => {
     it("should be valid without attachments", () => {
-      const wrappedDocument = wrapDocument(omit(cloneDeep(openAttestationDocument), "attachments"));
+      const document = omit(cloneDeep(openAttestationDocument), "attachments") as OpenAttestationDocument;
+      const wrappedDocument = wrapDocument(document);
       expect(wrappedDocument.version).toBe(SchemaId.v2);
     });
     it("should not be valid without attachments filename", () => {
       expect.assertions(2);
 
-      const document = omit(cloneDeep(openAttestationDocument), "attachments[0].filename");
+      const document = omit(cloneDeep(openAttestationDocument), "attachments[0].filename") as OpenAttestationDocument;
       try {
         wrapDocument(document);
       } catch (e) {
@@ -554,7 +556,7 @@ describe("schema/2.0", () => {
     it("should not be valid without attachments data", () => {
       expect.assertions(2);
 
-      const document = omit(cloneDeep(openAttestationDocument), "attachments[0].data");
+      const document = omit(cloneDeep(openAttestationDocument), "attachments[0].data") as OpenAttestationDocument;
       try {
         wrapDocument(document);
       } catch (e) {
@@ -575,7 +577,7 @@ describe("schema/2.0", () => {
     it("should not be valid without attachments type", () => {
       expect.assertions(2);
 
-      const document = omit(cloneDeep(openAttestationDocument), "attachments[0].type");
+      const document = omit(cloneDeep(openAttestationDocument), "attachments[0].type") as OpenAttestationDocument;
       try {
         wrapDocument(document);
       } catch (e) {

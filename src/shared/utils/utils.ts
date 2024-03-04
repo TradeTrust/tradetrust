@@ -114,9 +114,9 @@ export const getTemplateURL = (document: any): string | undefined => {
     case isWrappedV2Document(document):
       return (getData(document).$template as TemplateObject).url;
     case isRawV2Document(document):
-      return document.$template.url;
+      return (document.$template as TemplateObject).url;
     case isRawV3Document(document) || isWrappedV3Document(document):
-      return document.openAttestationMetadata.template.url;
+      return document.openAttestationMetadata?.template?.url;
     default:
       throw new Error(
         "Unsupported document type: Only can retrieve template url from OpenAttestation v2 & v3 documents."
@@ -161,8 +161,8 @@ export const isDocumentRevokable = (document: any): boolean => {
 
     case isWrappedV3Document(document):
       const isDidRevokableV3 =
-        (document.openAttestationMetadata.proof.method === v3.IdentityProofType.Did ||
-          document.openAttestationMetadata.proof.method === v3.IdentityProofType.DNSDid) &&
+        (document.openAttestationMetadata.identityProof.type === v3.IdentityProofType.Did ||
+          document.openAttestationMetadata.identityProof.type === v3.IdentityProofType.DNSDid) &&
         document.openAttestationMetadata.proof.revocation?.type === v3.RevocationType.RevocationStore;
       const isDocumentStoreRevokableV3 =
         document.openAttestationMetadata.proof.method === v3.Method.DocumentStore &&
