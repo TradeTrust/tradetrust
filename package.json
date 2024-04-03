@@ -33,9 +33,9 @@
   "author": "Tradetrust team",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@commitlint/cli": "^19.0.3",
-    "@commitlint/config-conventional": "^19.0.3",
-    "@commitlint/prompt": "^19.0.3",
+    "@commitlint/cli": "^17.6.7",
+    "@commitlint/config-conventional": "^17.6.7",
+    "@commitlint/prompt": "^17.6.7",
     "@rollup/plugin-json": "^6.1.0",
     "@types/debug": "^4.1.12",
     "@types/jest": "^29.5.12",
