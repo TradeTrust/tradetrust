@@ -5,7 +5,6 @@
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "browser": "dist/index.umd.js",
-  "type": "module",
   "types": "dist/types/index.d.ts",
   "scripts": {
     "benchmark:qr-code": "ts-node --transpile-only benchmarks/qr-code",
