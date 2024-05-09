@@ -1,5 +1,5 @@
 // disable to check error properties, tried with objectContaining but didnt work
-/* eslint-disable jest/no-try-expect,jest/no-conditional-expect */
+/* eslint-disable jest/no-conditional-expect */
 import { cloneDeep, merge, omit } from "lodash";
 import sampleTokenJson from "./sample-token.json";
 import sampleDocumentJson from "./sample-document.json";
@@ -62,7 +62,7 @@ describe("schema/2.0", () => {
             params: { allowedValues: ["DID"] },
             schemaPath: "#/definitions/identityProofDid/properties/type/enum",
           },
-        ])
+        ]),
       );
     }
   });
@@ -132,7 +132,7 @@ describe("schema/2.0", () => {
               },
               schemaPath: "#/required",
             },
-          ])
+          ]),
         );
       }
     });
@@ -167,7 +167,7 @@ describe("schema/2.0", () => {
               params: { passingSchemas: [0, 1] },
               schemaPath: "#/properties/issuers/items/oneOf",
             },
-          ])
+          ]),
         );
       }
     });
@@ -202,7 +202,7 @@ describe("schema/2.0", () => {
               params: { passingSchemas: [0, 2] },
               schemaPath: "#/properties/issuers/items/oneOf",
             },
-          ])
+          ]),
         );
       }
     });
@@ -237,7 +237,7 @@ describe("schema/2.0", () => {
               params: { passingSchemas: [1, 2] },
               schemaPath: "#/properties/issuers/items/oneOf",
             },
-          ])
+          ]),
         );
       }
     });
@@ -271,7 +271,7 @@ describe("schema/2.0", () => {
               params: { pattern: "^0x[a-fA-F0-9]{40}$" },
               schemaPath: "#/allOf/1/properties/documentStore/pattern",
             },
-          ])
+          ]),
         );
       }
     });
@@ -365,7 +365,7 @@ describe("schema/2.0", () => {
               },
               message: "must have required property 'location'",
             },
-          ])
+          ]),
         );
       }
     });
@@ -400,7 +400,7 @@ describe("schema/2.0", () => {
               },
               message: "must have required property 'key'",
             },
-          ])
+          ]),
         );
       }
     });
@@ -434,16 +434,15 @@ describe("schema/2.0", () => {
               },
               message: "must have required property 'key'",
             },
-          ])
+          ]),
         );
       }
     });
   });
   describe("template", () => {
     it("should be valid without $template (will use default view)", () => {
-      const wrappedDocument = wrapDocument(
-        omit(cloneDeep(openAttestationDocument), "$template") as OpenAttestationDocument
-      );
+      const documentWithoutTemplate = omit(cloneDeep(openAttestationDocument), "$template") as OpenAttestationDocument;
+      const wrappedDocument = wrapDocument(documentWithoutTemplate);
       expect(wrappedDocument.version).toBe(SchemaId.v2);
     });
     it("should not be valid if $template does not have name", () => {
@@ -466,7 +465,7 @@ describe("schema/2.0", () => {
               },
               schemaPath: "#/properties/%24template/oneOf/1/required",
             },
-          ])
+          ]),
         );
       }
     });
@@ -490,7 +489,7 @@ describe("schema/2.0", () => {
               },
               schemaPath: "#/properties/%24template/oneOf/1/required",
             },
-          ])
+          ]),
         );
       }
     });
@@ -522,16 +521,15 @@ describe("schema/2.0", () => {
               },
               schemaPath: "#/properties/%24template/oneOf/1/properties/type/enum",
             },
-          ])
+          ]),
         );
       }
     });
   });
   describe("attachments", () => {
     it("should be valid without attachments", () => {
-      const wrappedDocument = wrapDocument(
-        omit(cloneDeep(openAttestationDocument), "attachments") as OpenAttestationDocument
-      );
+      const document = omit(cloneDeep(openAttestationDocument), "attachments") as OpenAttestationDocument;
+      const wrappedDocument = wrapDocument(document);
       expect(wrappedDocument.version).toBe(SchemaId.v2);
     });
     it("should not be valid without attachments filename", () => {

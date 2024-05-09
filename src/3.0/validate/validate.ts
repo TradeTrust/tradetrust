@@ -22,7 +22,7 @@ const timeSecFrac = /(\.[0-9]+)?/;
 const timeNumOffset = new RegExp("[-+]".concat(timeHour.source, ":").concat(timeMinute.source));
 const timeOffset = new RegExp("([zZ]|".concat(timeNumOffset.source, ")"));
 const partialTime = new RegExp(
-  "".concat(timeHour.source, ":").concat(timeMinute.source, ":").concat(timeSecond.source).concat(timeSecFrac.source)
+  "".concat(timeHour.source, ":").concat(timeMinute.source, ":").concat(timeSecond.source).concat(timeSecFrac.source),
 );
 const fullDate = new RegExp("".concat(dateFullYear.source, "-").concat(dateMonth.source, "-").concat(dateMDay.source));
 const fullTime = new RegExp("".concat(partialTime.source).concat(timeOffset.source));
@@ -58,20 +58,10 @@ const documentLoader = async (url: string) => {
   if (preload) {
     preload = false;
     for (const url of preloadedContextList) {
-      // resolve the 2 w3c contexts (w3c data model and w3c
-      // context examples) to local files within the repo,
-      // otherwise, w3c would throttle these contexts after
-      // a set number of requests.
-      if (url === w3cExamplesContextUrl) {
-        contexts.set(url, Promise.resolve(w3cContextExamples));
-      } else if (url === w3cDataModelUrl) {
-        contexts.set(url, Promise.resolve(w3cDataModel));
-      } else {
-        contexts.set(
-          url,
-          fetch(url, { headers: { accept: "application/json" } }).then((res: any) => res.json())
-        );
-      }
+      contexts.set(
+        url,
+        fetch(url, { headers: { accept: "application/json" } }).then((res: any) => res.json()),
+      );
     }
   }
   if (contexts.get(url)) {
@@ -85,7 +75,7 @@ const documentLoader = async (url: string) => {
     const promise = nodeDocumentLoader(url);
     contexts.set(
       url,
-      promise.then(({ document }) => document)
+      promise.then(({ document }) => document),
     );
     return promise;
   }
@@ -129,7 +119,7 @@ export async function validateW3C<T extends OpenAttestationDocument>(credential:
         throw new Error(
           `"The property ${info.activeProperty ? `${info.activeProperty}.` : ""}${
             info.unmappedProperty
-          } in the input was not defined in the context"`
+          } in the input was not defined in the context"`,
         );
       }
     },

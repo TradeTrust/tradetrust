@@ -167,7 +167,7 @@ const diagnoseV3 = ({ kind, document, debug, mode }: { kind: Kind; document: any
   if (document.version !== SchemaId.v3) {
     return handleError(
       debug,
-      `The document schema version is wrong. Expected ${SchemaId.v3}, received ${document.version}`
+      `The document schema version is wrong. Expected ${SchemaId.v3}, received ${document.version}`,
     );
   }
 

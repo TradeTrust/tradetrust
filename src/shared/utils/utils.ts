@@ -101,7 +101,7 @@ export function getIssuerAddress(document: any): any {
     return document.credentialStatus.location;
   }
   throw new Error(
-    "Unsupported document type: Only can retrieve issuer address from wrapped OpenAttestation v2 & v3 documents."
+    "Unsupported document type: Only can retrieve issuer address from wrapped OpenAttestation v2 & v3 documents.",
   );
 }
 
@@ -225,12 +225,16 @@ export const getAssetId = (document: any): string => {
   }
 
   throw new Error(
-    "Unsupported document type: Only can retrieve asset id from wrapped OpenAttestation v2 & v3 transferable documents."
+    "Unsupported document type: Only can retrieve asset id from wrapped OpenAttestation v2 & v3 transferable documents.",
   );
 };
 
 export class SchemaValidationError extends Error {
-  constructor(message: string, public validationErrors: ErrorObject[], public document: any) {
+  constructor(
+    message: string,
+    public validationErrors: ErrorObject[],
+    public document: any,
+  ) {
     super(message);
   }
 }
@@ -259,7 +263,7 @@ export const isObfuscated = (
   }
 
   throw new Error(
-    "Unsupported document type: Can only check if there are obfuscated data from wrapped OpenAttestation v2 & v3 documents."
+    "Unsupported document type: Can only check if there are obfuscated data from wrapped OpenAttestation v2 & v3 documents.",
   );
 };
 
@@ -281,7 +285,7 @@ export const getObfuscatedData = (
   }
 
   throw new Error(
-    "Unsupported document type: Can only retrieve obfuscated data from wrapped OpenAttestation v2 & v3 documents."
+    "Unsupported document type: Can only retrieve obfuscated data from wrapped OpenAttestation v2 & v3 documents.",
   );
 };
 

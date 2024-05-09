@@ -61,7 +61,7 @@ export enum ContextUrl {
 }
 
 export const OpenAttestationHexString = String.withConstraint(
-  (value) => ethers.utils.isHexString(`0x${value}`, 32) || `${value} has not the expected length of 32 bytes`
+  (value) => ethers.utils.isHexString(`0x${value}`, 32) || `${value} has not the expected length of 32 bytes`,
 );
 export const TradeTrustHexString = String.withConstraint(
   (value) => ethers.utils.isHexString(`0x${value}`, 32) || `${value} has not the expected length of 32 bytes`

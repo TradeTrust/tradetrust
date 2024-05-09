@@ -45,14 +45,14 @@ import { TradeTrustDocument as TradeTrustDocumentV4 } from "./__generated__/tt-s
 
 export function wrapDocument<T extends OpenAttestationDocumentV2>(
   data: T,
-  options?: WrapDocumentOptionV2
+  options?: WrapDocumentOptionV2,
 ): WrappedDocumentV2<T> {
   return wrapDocumentV2(data, { externalSchemaId: options?.externalSchemaId });
 }
 
 export function wrapDocuments<T extends OpenAttestationDocumentV2>(
   dataArray: T[],
-  options?: WrapDocumentOptionV2
+  options?: WrapDocumentOptionV2,
 ): WrappedDocumentV2<T>[] {
   return wrapDocumentsV2(dataArray, { externalSchemaId: options?.externalSchemaId });
 }
@@ -140,11 +140,11 @@ export function digest(
 
 export function obfuscate<T extends OpenAttestationDocumentV2>(
   document: WrappedDocument<T>,
-  fields: string[] | string
+  fields: string[] | string,
 ): WrappedDocument<T>;
 export function obfuscate<T extends OpenAttestationDocumentV3>(
   document: WrappedDocument<T>,
-  fields: string[] | string
+  fields: string[] | string,
 ): WrappedDocument<T>;
 export function obfuscate<T extends OpenAttestationDocumentV4>(
   document: WrappedDocument<T>,
@@ -170,7 +170,7 @@ export const isSchemaValidationError = (error: any): error is SchemaValidationEr
 export async function signDocument<T extends v2.OpenAttestationDocument>(
   document: v2.SignedWrappedDocument<T> | v2.WrappedDocument<T>,
   algorithm: SUPPORTED_SIGNING_ALGORITHM,
-  keyOrSigner: SigningKey | ethers.Signer
+  keyOrSigner: SigningKey | ethers.Signer,
 ): Promise<v2.SignedWrappedDocument<T>>;
 export async function signDocument<T extends v3.OpenAttestationDocument>(
   document: v3.SignedWrappedDocument<T> | v3.WrappedDocument<T>,
@@ -190,7 +190,7 @@ export async function signDocument<T extends TTv4.TradeTrustDocument>(
 export async function signDocument(
   document: any,
   algorithm: SUPPORTED_SIGNING_ALGORITHM,
-  keyOrSigner: SigningKey | ethers.Signer
+  keyOrSigner: SigningKey | ethers.Signer,
 ) {
   // rj was worried it could happen deep in the code, so I moved it to the boundaries
   if (!SigningKey.guard(keyOrSigner) && !Signer.isSigner(keyOrSigner)) {

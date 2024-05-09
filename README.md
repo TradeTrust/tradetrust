@@ -1,14 +1,12 @@
-![Release](https://github.com/TradeTrust/open-attestation/actions/workflows/release.yml/badge.svg)
-
-# Open Attestation
+# TradeTrust
 
 Attestation and notary framework for any document types on the blockchain.
 
-OpenAttestation allows any entity to prove the existence of a document or a batch of documents. It makes use of smart contracts on the Ethereum blockchain to store cryptographic proofs of individual documents.
+TradeTrust allows any entity to prove the existence of a document or a batch of documents. It makes use of smart contracts on the Ethereum blockchain to store cryptographic proofs of individual documents.
 
-Alternatively, OpenAttestation can be used to make digitally verifiable documents using digital signatures, forgoing the need to pay for Ethereum transactions.
+Alternatively, TradeTrust can be used to make digitally verifiable documents using digital signatures, forgoing the need to pay for Ethereum transactions.
 
-The [Open Attestation](https://github.com/TradeTrust/open-attestation) repository allows you to batch the documents to obtain the merkle root of the batch to be committed to the blockchain. It also allows you to verify the signature of the document wrapped using the OpenAttestation framework.
+The [TradeTrust](https://github.com/TradeTrust/tradetrust) repository allows you to batch the documents to obtain the merkle root of the batch to be committed to the blockchain. It also allows you to verify the signature of the document wrapped using the TradeTrust framework.
 
 ## Installation
 
@@ -173,15 +171,32 @@ To run tests
 npm run test
 ```
 
+### vc-test-suite
+
+You can run the vc-test-suite against `open-attestation` by running `npm run test:vc`. This command will:
+
+- clone https://github.com/w3c/vc-test-suite.git
+- copy the local configuration (`vc-test-suite-config.json`) into the cloned repository
+- install the latest version of `@tradetrust-tt/tradetrust-cli`
+- monkey patch `open-attestation` in `@tradetrust-tt/tradetrust-cli`. That means that the current version of the project will be built and replace the one installed with `@tradetrust-tt/tradetrust-cli`.
+
+#### Local debug
+
+In the event you face a problem with one test and want to debug locally:
+
+1. Ensure the folder `vc-test-suite` is available from the root of the project. If that's not the case, run `npm run test:vc` first.
+1. Open `runVcTest.sh` and update `install_vc_test_suite=true` to `install_vc_test_suite=false`. This line will help to preserve the `vc-test-suite` folder untouched.
+
+You can now debug from the `vc-test-suite` folder the way you need it.
+
 ## Additional information
 
-- Found a bug? Have a question? Want to share an idea? Reach us at our [Github repository](https://github.com/Open-Attestation/open-attestation).
-- We are currently building a new version of the schema, compatible with W3C VC. This is very experimental and whatever is available for v2 documents are also available for v4 documents:
-  - [OA schema v4](https://schemata.openattestation.com/com/openattestation/4.0/alpha-schema.json)
-  - [TT schema v4](https://schemata.tradetrust.io/io/tradetrust/4.0/alpha-schema.json)
-  - Typings: `import {OAv4, TTv4} from "@tradetrust-tt/tradetrust"`.
-  - Type guard: `utils.isWrappedOAV4Document`, `utils.isWrappedTTV4Document`.
-  - Wrapping: `_unsafe_use_it_at_your_own_risk_v4_alpha_oa_wrapDocument`, `_unsafe_use_it_at_your_own_risk_v4_alpha_tt_wrapDocument`
-  - Example docs in `tests/fixtures/v4`
+- Found a bug? Have a question? Want to share an idea? Reach us at our [Github repository](https://github.com/TradeTrust/tradetrust).
+- We are currently building a new version of the schema, compatible with W3C VC. This is very experimental and whatever is available for v2 documents are also available for v3 documents:
+  - [OA schema v3](https://schema.openattestation.com/3.0/schema.json)
+  - Typings: `import {v3} from "@tradetrust-tt/tradetrust"`.
+  - Type guard: `utils.isWrappedV3Document`.
+  - Wrapping: `__unsafe__use__it__at__your__own__risks__wrapDocument` (future usage: `wrapDocument(document, {version: "open-attestation/3.0"})`
+  - Example docs in `tests/fixtures/v3`
 - There are extra utilities available: 
-  - Refer to the [utils](https://github.com/TradeTrust/open-attestation/blob/master/src/shared/utils/utils.ts) component for the full list of utilities.
+  - Refer to the [utils](https://github.com/TradeTrust/tradetrust/blob/master/src/shared/utils/utils.ts) component for the full list of utilities.

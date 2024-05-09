@@ -22,7 +22,7 @@ import { Mode } from "./@types/diagnose";
  */
 export const isRawV2Document = (
   document: any,
-  { mode }: { mode: Mode } = { mode: "non-strict" }
+  { mode }: { mode: Mode } = { mode: "non-strict" },
 ): document is OpenAttestationDocumentV2 => {
   return diagnose({ version: "2.0", kind: "raw", document, debug: false, mode }).length === 0;
 };
@@ -34,7 +34,7 @@ export const isRawV2Document = (
  */
 export const isRawV3Document = (
   document: any,
-  { mode }: { mode: Mode } = { mode: "non-strict" }
+  { mode }: { mode: Mode } = { mode: "non-strict" },
 ): document is OpenAttestationDocumentV3 => {
   return diagnose({ version: "3.0", kind: "raw", document, debug: false, mode }).length === 0;
 };
@@ -102,7 +102,7 @@ export const isRawTTV4Document = (
  */
 export const isWrappedV2Document = (
   document: any,
-  { mode }: { mode: Mode } = { mode: "non-strict" }
+  { mode }: { mode: Mode } = { mode: "non-strict" },
 ): document is WrappedDocumentV2<OpenAttestationDocumentV2> => {
   return diagnose({ version: "2.0", kind: "wrapped", document, debug: false, mode }).length === 0;
 };
@@ -149,7 +149,7 @@ export const isWrappedTTV4Document = (
  */
 export const isSignedWrappedV2Document = (
   document: any,
-  { mode }: { mode: Mode } = { mode: "non-strict" }
+  { mode }: { mode: Mode } = { mode: "non-strict" },
 ): document is SignedWrappedDocument<OpenAttestationDocumentV2> => {
   return diagnose({ version: "2.0", kind: "signed", document, debug: false, mode }).length === 0;
 };
@@ -161,7 +161,7 @@ export const isSignedWrappedV2Document = (
  */
 export const isSignedWrappedV3Document = (
   document: any,
-  { mode }: { mode: Mode } = { mode: "non-strict" }
+  { mode }: { mode: Mode } = { mode: "non-strict" },
 ): document is SignedWrappedDocument<OpenAttestationDocumentV3> => {
   return diagnose({ version: "3.0", kind: "signed", document, debug: false, mode }).length === 0;
 };
