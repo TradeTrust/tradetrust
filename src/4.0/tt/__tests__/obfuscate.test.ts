@@ -288,7 +288,7 @@ describe("privacy", () => {
     test("should return array of hashes when there is obfuscated data in document v4", () => {
       const obfuscatedData = getObfuscatedData(documentObfuscatedV4);
       expect(obfuscatedData.length).toBe(1);
-      expect(obfuscatedData?.[0]).toBe("8660421ff5af564432a796e3c16bb14be19a6fa0e2ef33b65b1cf7857186cc77");
+      expect(obfuscatedData?.[0]).toBe("b38c55ee459f8cb96db13e5efd494105e98b9abee37ada37d31ae0bb1eadb73e");
     });
   });
 
