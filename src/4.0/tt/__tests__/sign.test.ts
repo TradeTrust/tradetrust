@@ -1,6 +1,6 @@
 import { signDocument, TTv4 as v4 } from "../../../index";
 import { SUPPORTED_SIGNING_ALGORITHM } from "../../../shared/@types/sign";
-import sample from "../../../../test/fixtures/v4/tt/did-wrapped2.json";
+import sample from "../../../../test/fixtures/v4/tt/did-wrapped.json";
 import { Wallet } from "ethers";
 
 const wrappedDocumentV4 = sample as v4.WrappedDocument;
@@ -15,7 +15,7 @@ describe("v4", () => {
     expect(Object.keys(proof).length).toBe(9);
     expect(proof.key).toBe("did:ethr:0xE712878f6E8d5d4F9e87E10DA604F9cB564C9a89#controller");
     expect(proof.signature).toBe(
-      "0x0c54251d00ef6cb000fdc297f77fca410f023ec5f3549af9755180ce2823079a3bc12de9a6f0629a4112c13eceb26e01e31e23d5bed4a9e542e3ebfb253ab13c1c"
+      "0xf08422c35dd34997ee9d16fd405cd5990d8cd48f8d9fced74b0d42428ab5c3f9524a7b4eb4178ccbb29b0c731ca82e901bc92df37c55537cae959e295fe0b2971c"
     );
   });
   it("should sign a document with a wallet", async () => {
@@ -30,7 +30,7 @@ describe("v4", () => {
     expect(Object.keys(proof).length).toBe(9);
     expect(proof.key).toBe("did:ethr:0x906FB815De8976b1e38D9a4C1014a3acE16Ce53C#controller");
     expect(proof.signature).toBe(
-      "0xc19b434f043d33d12d36d9f2af996ae8aa9c08ea65db44652b1f0943749b42e9192289d26ba50326e5267a3e6dc8203364144c703243cb84d2c3c8beffe7954d1b"
+      "0x60d7f8799607b7d3fb99ec5ca1cf7cfb996895fcadc34e165bb9496bd00896951f95d9006c717c2552a22c42a90543e9ebdcf96f520fc1412d3bcf3c0b34e03d1b"
     );
   });
 

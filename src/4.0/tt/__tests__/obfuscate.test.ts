@@ -43,6 +43,10 @@ const data: TradeTrustDocument = {
       { foo: "baz", doo: "faz" },
     ],
   },
+  network: {
+    chain: "NA",
+    chainId: "NA",
+  },
   credentialStatus: {
     type: "TradeTrustCredentialStatus",
     credentialStatusType: CredentialStatusType.None,
@@ -284,7 +288,7 @@ describe("privacy", () => {
     test("should return array of hashes when there is obfuscated data in document v4", () => {
       const obfuscatedData = getObfuscatedData(documentObfuscatedV4);
       expect(obfuscatedData.length).toBe(1);
-      expect(obfuscatedData?.[0]).toBe("79c4ca33f12826311cd411b3e3ccd533c564a761e8fa61afdd685e2c6657a4ac");
+      expect(obfuscatedData?.[0]).toBe("8660421ff5af564432a796e3c16bb14be19a6fa0e2ef33b65b1cf7857186cc77");
     });
   });
 

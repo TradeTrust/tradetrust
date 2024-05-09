@@ -28,6 +28,7 @@ const sampleTradeTrustDoc: TradeTrustDocument = {
   ],
   id: "http://example.edu/credentials/58473",
   type: ["VerifiableCredential", "TradeTrustCredential", "AlumniCredential"],
+  network: { chain: "NA", chainId: "NA" },
   issuer: {
     id: "https://example.edu/issuers/14",
     identityProof: {

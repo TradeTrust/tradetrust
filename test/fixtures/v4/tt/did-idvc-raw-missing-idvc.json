@@ -6,13 +6,17 @@
   "type": ["VerifiableCredential", "TradeTrustCredential"],
   "validFrom": "2021-03-08T12:00:00+08:00",
   "issuer": {
-    "id": "did:ethr:0xE94E4f16ad40ADc90C29Dc85b42F1213E034947C",
+    "id": "did:ethr:0x433097a1C1b8a3e9188d8C54eCC057B1D69f1638",
     "type": "TradeTrustIssuer",
     "name": "My Own Company Pte Ltd",
     "identityProof": {
       "identityProofType": "IDVC",
       "identifier": "My Own Company Pte Ltd"
     }
+  },
+  "network": {
+    "chain": "NA",
+    "chainId": "NA"
   },
   "credentialStatus": {
     "type": "TradeTrustCredentialStatus",

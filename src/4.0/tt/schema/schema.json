@@ -267,7 +267,7 @@
           "description": "Chain ID of the network used"
         }
       },
-      "required": ["chain"],
+      "required": ["chain", "chainId"],
       "additionalProperties": true
     }
   },
@@ -285,5 +285,5 @@
       }
     }
   ],
-  "required": ["@context", "issuer", "credentialStatus", "credentialSubject"]
+  "required": ["@context", "issuer", "credentialStatus", "credentialSubject", "network"]
 }
