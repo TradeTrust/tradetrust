@@ -22,7 +22,9 @@ npm i @tradetrust-tt/tradetrust
 
 `wrapDocuments` takes in an array of documents and returns the wrapped batch. Each document must be valid regarding the version of the schema used (see below) It computes the Merkle root of the batch and appends it to each document. This Merkle root can be published on the blockchain and queried against to prove the provenance of the document issued this way. Alternatively, the Merkle root may be signed by the document issuer's private key, which may be cryptographically verified using the issuer's public key or Ethereum account.
 
-In the future, this function may accept a second optional parameter to specify the version of open-attestation you want to use. Currently, open-attestation will use schema 2.0. See [Additional Information](#additional-information) for information on using experimental v3.0 documents, which aim to be compatible with the W3C's data model for [Verifiable Credentials](https://www.w3.org/TR/vc-data-model/).
+In the future, this function may accept a second optional parameter to specify the version of open-attestation you want to use. Currently, open-attestation will use schema 2.0. 
+
+See [Additional Information](#additional-information) for information on using experimental v4.0-alpha documents, which aim to be compatible with the W3C's data model for [Verifiable Credentials](https://www.w3.org/TR/vc-data-model/).
 
 The `wrapDocument` function is identical but accepts only one document.
 
@@ -115,7 +117,7 @@ console.log(validatedSchema);
 
 ### Verify signature of document
 
-`verifysignature` checks that the signature of the document corresponds to the actual content in the document. In addition, it checks that the target hash (hash of the document content), is part of the set of documents wrapped in the batch using the proofs.
+`verifySignature` checks that the signature of the document corresponds to the actual content in the document. In addition, it checks that the target hash (hash of the document content), is part of the set of documents wrapped in the batch using the proofs.
 
 Note that this method does not check against the blockchain or any registry if this document has been published. The merkle root of this document need to be checked against a publicly accessible document store (can be a smart contract on the blockchain).
 
@@ -146,6 +148,10 @@ utils.isWrappedV3Document(document);
 - `isSignedWrappedV2Document` type guard for signed v2 document
 - `isSignedWrappedV3Document` type guard for signed v3 document
 - `isWrappedV3Document` type guard for wrapped v3 document
+- `isSignedWrappedOAV4Document` type guard for signed OA v4 document
+- `isWrappedOAV4Document` type guard for wrapped OA v4 document
+- `isSignedWrappedTTV4Document` type guard for signed TT v4 document
+- `isWrappedTTV4Document` type guard for wrapped TT v4 document
 - `diagnose` tool to find out why a document is not a valid open attestation file (wrapped or signed document)
 
 ### Obfuscating data

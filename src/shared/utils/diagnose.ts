@@ -1,23 +1,34 @@
 import { logger } from "ethers";
-import { SchemaId } from "../@types/document";
+import { ContextUrl, SchemaId } from "../@types/document";
 import { validateSchema as validate } from "../validate";
 import {
-  VerifiableCredentialSignedProof,
-  VerifiableCredentialWrappedProof,
-  VerifiableCredentialWrappedProofStrict,
+  VerifiableCredentialWrappedProof as WrappedProofV3,
+  VerifiableCredentialWrappedProofStrict as WrappedProofStrictV3,
+  VerifiableCredentialSignedProof as SignedWrappedProofV3,
 } from "../../3.0/types";
+import {
+  WrappedProof as OAWrappedProofV4,
+  WrappedProofStrict as OAWrappedProofStrictV4,
+  SignedWrappedProof as OASignedWrappedProofV4,
+} from "../../4.0/oa/types";
+import {
+  WrappedProof as TTWrappedProofV4,
+  WrappedProofStrict as TTWrappedProofStrictV4,
+  SignedWrappedProof as TTSignedWrappedProofV4,
+} from "../../4.0/tt/types";
 import { ArrayProof, Signature, SignatureStrict } from "../../2.0/types";
 import { clone, cloneDeepWith } from "lodash";
 import { buildAjv, getSchema } from "../ajv";
 import { Kind, Mode } from "./@types/diagnose";
+import { isStringArray } from "./utils";
 
-type Version = "2.0" | "3.0";
+type Version = "2.0" | "3.0" | "oa_4.0" | "tt_4.0";
 
 export interface DiagnoseError {
   message: string;
 }
 
-const handleError = (debug: boolean, ...messages: string[]) => {
+export const handleError = (debug: boolean, ...messages: string[]) => {
   if (debug) {
     for (const message of messages) {
       logger.info(message);
@@ -57,7 +68,7 @@ const ajv = buildAjv({ transform: transformSchema, validateFormats: false });
 
 /**
  * Tools to give information about the validity of a document. It will return and eventually output the errors found.
- * @param version 2.0 or 3.0
+ * @param version 2.0, 3.0 or 4.0
  * @param kind raw, wrapped or signed
  * @param debug turn on to output in the console, the errors found
  * @param mode strict or non-strict. Strict will perform additional check on the data. For instance strict validation will ensure that a target hash is a 32 bytes hex string while non strict validation will just check that target hash is a string.
@@ -84,9 +95,16 @@ export const diagnose = ({
     return handleError(debug, "The document must be an object");
   }
 
+  const versionToSchemaId: Record<Version, SchemaId> = {
+    "2.0": SchemaId.v2,
+    "3.0": SchemaId.v3,
+    "oa_4.0": SchemaId.oa_v4,
+    "tt_4.0": SchemaId.tt_v4,
+  };
+
   const errors = validate(
     document,
-    getSchema(version === "3.0" ? SchemaId.v3 : SchemaId.v2, mode === "non-strict" ? ajv : undefined),
+    getSchema(versionToSchemaId[version], mode === "non-strict" ? ajv : undefined),
     kind,
   );
 
@@ -94,7 +112,7 @@ export const diagnose = ({
     // TODO this can be improved later
     return handleError(
       debug,
-      `The document does not match OpenAttestation schema ${version === "3.0" ? "3.0" : "2.0"}`,
+      `The document does not match OpenAttestation schema ${version}`,
       ...errors.map((error) => `${error.instancePath || "document"} - ${error.message}`),
     );
   }
@@ -103,10 +121,16 @@ export const diagnose = ({
     return [];
   }
 
-  if (version === "3.0") {
-    return diagnoseV3({ mode, debug, document, kind });
-  } else {
-    return diagnoseV2({ mode, debug, document, kind });
+  switch (version) {
+    case "tt_4.0":
+      return diagnoseTTV4({ mode, debug, document, kind });
+    case "oa_4.0":
+      return diagnoseOAV4({ mode, debug, document, kind });
+    case "3.0":
+      return diagnoseV3({ mode, debug, document, kind });
+    case "2.0":
+    default:
+      return diagnoseV2({ mode, debug, document, kind });
   }
 };
 
@@ -149,9 +173,7 @@ const diagnoseV3 = ({ kind, document, debug, mode }: { kind: Kind; document: any
 
   try {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    mode === "strict"
-      ? VerifiableCredentialWrappedProofStrict.check(document.proof)
-      : VerifiableCredentialWrappedProof.check(document.proof);
+    mode === "strict" ? WrappedProofStrictV3.check(document.proof) : WrappedProofV3.check(document.proof);
   } catch (e) {
     if (e instanceof Error) {
       return handleError(debug, e.message);
@@ -165,7 +187,7 @@ const diagnoseV3 = ({ kind, document, debug, mode }: { kind: Kind; document: any
       return handleError(debug, `The document does not have a proof`);
     }
     try {
-      VerifiableCredentialSignedProof.check(document.proof);
+      SignedWrappedProofV3.check(document.proof);
     } catch (e) {
       if (e instanceof Error) {
         return handleError(debug, e.message);
@@ -174,5 +196,198 @@ const diagnoseV3 = ({ kind, document, debug, mode }: { kind: Kind; document: any
       }
     }
   }
+  return [];
+};
+
+const diagnoseOAV4 = ({
+  kind,
+  document,
+  debug,
+  mode,
+}: {
+  kind: Exclude<Kind, "raw">;
+  document: any;
+  debug: boolean;
+  mode: Mode;
+}) => {
+  /* Wrapped document checks */
+  try {
+    // 1. Since OA v4 has deprecated a few properties from v2/v3, check that they are not used
+    const deprecatedProperties = ["version", "openAttestationMetadata"];
+    const documentProperties = Object.keys(document);
+    const deprecatedDocumentProperties = documentProperties.filter((p) => deprecatedProperties.includes(p));
+
+    if (deprecatedDocumentProperties.length > 0) {
+      return handleError(
+        debug,
+        `The document has outdated properties previously used in v2/v3. The following properties are no longer in use in a v4 document: ${deprecatedDocumentProperties}`,
+      );
+    }
+
+    // 2. Ensure that required @contexts are present
+    // @context: [Base, OA, ...]
+    const contexts = ["https://www.w3.org/2018/credentials/v1", ContextUrl.oa_v4_alpha];
+    if (isStringArray(document["@context"])) {
+      for (let i = 0; i < contexts.length; i++) {
+        if (document["@context"][i] !== contexts[i]) {
+          return handleError(
+            debug,
+            `The document @context contains an unexpected value or in the wrong order. Expected ${contexts}, received ${document["@context"]}`,
+          );
+        }
+      }
+    } else {
+      return handleError(
+        debug,
+        `The document @context should be an array of string values. Expected ${contexts}, received ${document["@context"]}`,
+      );
+    }
+
+    // 3. Ensure that required types are present
+    // type: ["VerifiableCredential", "OpenAttestationCredential", ...]
+    const types = ["VerifiableCredential", "OpenAttestationCredential"];
+    if (isStringArray(document["type"])) {
+      for (let i = 0; i < types.length; i++) {
+        if (document["type"][i] !== types[i]) {
+          return handleError(
+            debug,
+            `The document type contains an unexpected value or in the wrong order. Expected ${types}, received ${document["type"]}`,
+          );
+        }
+      }
+    } else {
+      return handleError(
+        debug,
+        `The document type should be an array of string values. Expected ${types}, received ${document["type"]}`,
+      );
+    }
+
+    // 4. Check proof object
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    if (mode === "strict") {
+      OAWrappedProofStrictV4.check(document.proof);
+    } else {
+      OAWrappedProofV4.check(document.proof);
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      return handleError(debug, e.message);
+    } else {
+      console.error(e);
+    }
+  }
+
+  /* Signed & wrapped document checks */
+  if (kind === "signed") {
+    if (!document.proof) {
+      return handleError(debug, `The document does not have a proof`);
+    }
+    try {
+      OASignedWrappedProofV4.check(document.proof);
+    } catch (e) {
+      if (e instanceof Error) {
+        return handleError(debug, e.message);
+      } else {
+        console.error(e);
+      }
+    }
+  }
+
+  return [];
+};
+const diagnoseTTV4 = ({
+  kind,
+  document,
+  debug,
+  mode,
+}: {
+  kind: Exclude<Kind, "raw">;
+  document: any;
+  debug: boolean;
+  mode: Mode;
+}) => {
+  /* Wrapped document checks */
+  try {
+    // 1. Since OA v4 has deprecated a few properties from v2/v3, check that they are not used
+    const deprecatedProperties = ["version", "openAttestationMetadata"];
+    const documentProperties = Object.keys(document);
+    const deprecatedDocumentProperties = documentProperties.filter((p) => deprecatedProperties.includes(p));
+
+    if (deprecatedDocumentProperties.length > 0) {
+      return handleError(
+        debug,
+        `The document has outdated properties previously used in v2/v3. The following properties are no longer in use in a v4 document: ${deprecatedDocumentProperties}`,
+      );
+    }
+
+    // 2. Ensure that required @contexts are present
+    // @context: [Base, TT, ...]
+    const contexts = ["https://www.w3.org/2018/credentials/v1", ContextUrl.tt_v4_alpha];
+    if (isStringArray(document["@context"])) {
+      for (let i = 0; i < contexts.length; i++) {
+        if (document["@context"][i] !== contexts[i]) {
+          return handleError(
+            debug,
+            `The document @context contains an unexpected value or in the wrong order. Expected ${contexts}, received ${document["@context"]}`,
+          );
+        }
+      }
+    } else {
+      return handleError(
+        debug,
+        `The document @context should be an array of string values. Expected ${contexts}, received ${document["@context"]}`,
+      );
+    }
+
+    // 3. Ensure that required types are present
+    // type: ["VerifiableCredential", "TradeTrustCredential", ...]
+    const types = ["VerifiableCredential", "TradeTrustCredential"];
+    if (isStringArray(document["type"])) {
+      for (let i = 0; i < types.length; i++) {
+        if (document["type"][i] !== types[i]) {
+          return handleError(
+            debug,
+            `The document type contains an unexpected value or in the wrong order. Expected ${types}, received ${document["type"]}`,
+          );
+        }
+      }
+    } else {
+      return handleError(
+        debug,
+        `The document type should be an array of string values. Expected ${types}, received ${document["type"]}`,
+      );
+    }
+
+    // 4. Check proof object
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    if (mode === "strict") {
+      TTWrappedProofStrictV4.check(document.proof);
+    } else {
+      TTWrappedProofV4.check(document.proof);
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      return handleError(debug, e.message);
+    } else {
+      console.error(e);
+    }
+  }
+
+  /* Signed & wrapped document checks */
+  if (kind === "signed") {
+    if (!document.proof) {
+      return handleError(debug, `The document does not have a proof`);
+    }
+    try {
+      TTSignedWrappedProofV4.check(document.proof);
+    } catch (e) {
+      if (e instanceof Error) {
+        return handleError(debug, e.message);
+      } else {
+        console.error(e);
+      }
+    }
+  }
+
   return [];
 };

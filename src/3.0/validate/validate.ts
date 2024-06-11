@@ -39,9 +39,11 @@ const isValidRFC3986 = (str: any) => {
   return rfc3986.test(str);
 };
 
+const w3cExamplesContextUrl = "https://www.w3.org/2018/credentials/examples/v1";
+const w3cDataModelUrl = "https://www.w3.org/2018/credentials/v1";
 const preloadedContextList = [
-  "https://www.w3.org/2018/credentials/v1",
-  "https://www.w3.org/2018/credentials/examples/v1",
+  w3cExamplesContextUrl,
+  w3cDataModelUrl,
   "https://schemata.openattestation.com/com/openattestation/1.0/DrivingLicenceCredential.json",
   "https://schemata.openattestation.com/com/openattestation/1.0/OpenAttestation.v3.json",
   "https://schemata.openattestation.com/com/openattestation/1.0/CustomContext.json",

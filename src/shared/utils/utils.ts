@@ -1,14 +1,33 @@
-import { keccak256 } from "js-sha3";
-import { OpenAttestationDocument as OpenAttestationDocumentV2, TemplateObject } from "../../__generated__/schema.2.0";
-import { OpenAttestationDocument as OpenAttestationDocumentV3 } from "../../__generated__/schema.3.0";
-import { WrappedDocument as WrappedDocumentV2 } from "../../2.0/types";
-import { WrappedDocument as WrappedDocumentV3 } from "../../3.0/types";
-import { unsaltData } from "../../2.0/salt";
 import { ErrorObject } from "ajv";
-import { isRawV2Document, isRawV3Document, isWrappedV2Document, isWrappedV3Document } from "./guard";
-import { OpenAttestationDocument, WrappedDocument } from "../@types/document";
+import { keccak256 } from "js-sha3";
+
 import * as v2 from "../../__generated__/schema.2.0";
+import { unsaltData } from "../../2.0/salt";
+import { WrappedDocument as WrappedDocumentV2 } from "../../2.0/types";
+import { OpenAttestationDocument as OpenAttestationDocumentV2 } from "../../__generated__/schema.2.0";
+
 import * as v3 from "../../__generated__/schema.3.0";
+import { WrappedDocument as WrappedDocumentV3 } from "../../3.0/types";
+import { OpenAttestationDocument as OpenAttestationDocumentV3 } from "../../__generated__/schema.3.0";
+
+import * as TTv4 from "../../__generated__/tt-schema.4.0";
+import * as OAv4 from "../../__generated__/oa-schema.4.0";
+import { WrappedDocument as OAWrappedDocumentV4 } from "../../4.0/oa/types";
+import { WrappedDocument as TTWrappedDocumentV4 } from "../../4.0/tt/types";
+import { OpenAttestationDocument as OpenAttestationDocumentV4 } from "../../__generated__/oa-schema.4.0";
+import { TradeTrustDocument as TradeTrustDocumentV4 } from "../../__generated__/tt-schema.4.0";
+
+import { OpenAttestationDocument, WrappedDocument } from "../@types/document";
+import {
+  isRawV2Document,
+  isWrappedV2Document,
+  isRawV3Document,
+  isWrappedV3Document,
+  isRawOAV4Document,
+  isWrappedOAV4Document,
+  isRawTTV4Document,
+  isWrappedTTV4Document,
+} from "./guard";
 
 export type Hash = string | Buffer;
 type Extract<P> = P extends WrappedDocumentV2<infer T> ? T : never;
@@ -77,102 +96,127 @@ export function getIssuerAddress(document: any): any {
   } else if (isWrappedV3Document(document)) {
     return document.openAttestationMetadata.proof.value;
   }
+  // TODO: OA v4 proof schema not updated to support document store issuance yet
+  else if (isWrappedTTV4Document(document)) {
+    return document.credentialStatus.location;
+  }
   throw new Error(
     "Unsupported document type: Only can retrieve issuer address from wrapped OpenAttestation v2 & v3 documents.",
   );
 }
 
 export const getMerkleRoot = (document: any): string => {
-  switch (true) {
-    case isWrappedV2Document(document):
-      return document.signature.merkleRoot;
-    case isWrappedV3Document(document):
-      return document.proof.merkleRoot;
-    default:
-      throw new Error(
-        "Unsupported document type: Only can retrieve merkle root from wrapped OpenAttestation v2 & v3 documents.",
-      );
-  }
+  if (isWrappedV2Document(document)) return document.signature.merkleRoot;
+  else if (isWrappedV3Document(document)) return document.proof.merkleRoot;
+  else if (isWrappedOAV4Document(document)) return document.proof.merkleRoot;
+  else if (isWrappedTTV4Document(document)) return document.proof.merkleRoot;
+
+  throw new Error(
+    "Unsupported document type: Only can retrieve merkle root from wrapped OpenAttestation v2, v3 & v4 documents.",
+  );
 };
 
 export const getTargetHash = (document: any): string => {
-  switch (true) {
-    case isWrappedV2Document(document):
-      return document.signature.targetHash;
-    case isWrappedV3Document(document):
-      return document.proof.targetHash;
-    default:
-      throw new Error(
-        "Unsupported document type: Only can retrieve target hash from wrapped OpenAttestation v2 & v3 documents.",
-      );
-  }
+  if (isWrappedV2Document(document)) return document.signature.targetHash;
+  else if (isWrappedV3Document(document)) return document.proof.targetHash;
+  else if (isWrappedOAV4Document(document)) return document.proof.targetHash;
+  else if (isWrappedTTV4Document(document)) return document.proof.targetHash;
+
+  throw new Error(
+    "Unsupported document type: Only can retrieve target hash from wrapped OpenAttestation v2, v3 & v4 documents.",
+  );
 };
 
 // get template url from raw document for document renderer preview.
 export const getTemplateURL = (document: any): string | undefined => {
-  switch (true) {
-    case isWrappedV2Document(document):
-      return (getData(document).$template as TemplateObject).url;
-    case isRawV2Document(document):
-      return (document.$template as TemplateObject).url;
-    case isRawV3Document(document) || isWrappedV3Document(document):
-      return document.openAttestationMetadata?.template?.url;
-    default:
-      throw new Error(
-        "Unsupported document type: Only can retrieve template url from OpenAttestation v2 & v3 documents.",
-      );
+  if (isWrappedV2Document(document)) {
+    const unwrappedDocument = getData(document);
+    if (typeof unwrappedDocument.$template === "string") return unwrappedDocument.$template;
+    else return unwrappedDocument.$template?.url;
+  } else if (isRawV2Document(document)) {
+    if (typeof document.$template === "string") return document.$template;
+    else return document.$template?.url;
+  } else if (isRawV3Document(document) || isWrappedV3Document(document)) {
+    return document.openAttestationMetadata.template?.url;
+  } else if (isRawOAV4Document(document) || isWrappedOAV4Document(document)) {
+    return document.renderMethod?.url;
+  } else if (isRawTTV4Document(document) || isWrappedTTV4Document(document)) {
+    return document.renderMethod?.url;
   }
+
+  throw new Error(
+    "Unsupported document type: Only can retrieve template url from OpenAttestation v2, v3 & v4 documents.",
+  );
 };
 
 export const getDocumentData = (document: WrappedDocument<OpenAttestationDocument>): OpenAttestationDocument => {
-  if (isWrappedV3Document(document)) {
+  if (isWrappedV3Document(document) || isWrappedOAV4Document(document) || isWrappedTTV4Document(document)) {
     const omit = (keys: any, obj: any): any =>
       Object.fromEntries(Object.entries(obj).filter(([k]) => !keys.includes(k)));
     return omit(["proof"], document);
   } else if (isWrappedV2Document(document)) {
     return getData(document);
-  } else {
-    throw "Unsupported document type: Only can retrieve document data for wrapped OpenAttestation v2 & v3 documents.";
   }
+
+  throw new Error(
+    "Unsupported document type: Only can retrieve document data for wrapped OpenAttestation v2, v3 & v4 documents.",
+  );
 };
 
 export const isTransferableAsset = (document: any): boolean => {
   return (
     !!getData(document)?.issuers[0]?.tokenRegistry ||
-    document?.openAttestationMetadata?.proof?.method === "TOKEN_REGISTRY"
+    document?.openAttestationMetadata?.proof?.method === "TOKEN_REGISTRY" ||
+    document?.credentialStatus?.credentialStatusType === "TOKEN_REGISTRY"
   );
 };
 
 export const isDocumentRevokable = (document: any): boolean => {
-  switch (true) {
-    case isTransferableAsset(document):
-      return false;
+  if (isTransferableAsset(document)) {
+    return false;
+  } else if (isWrappedV2Document(document)) {
+    const issuer = getData(document)?.issuers[0];
+    const isDidRevokableV2 =
+      (issuer.identityProof?.type === v2.IdentityProofType.Did ||
+        issuer.identityProof?.type === v2.IdentityProofType.DNSDid) &&
+      (issuer.revocation?.type === v2.RevocationType.RevocationStore ||
+        issuer.revocation?.type === v2.RevocationType.OcspResponder);
+    const isDocumentStoreRevokableV2 = !!issuer.certificateStore || !!issuer.documentStore;
 
-    case isWrappedV2Document(document):
-      const issuer = getData(document)?.issuers[0];
-      const isDidRevokableV2 =
-        (issuer.identityProof?.type === v2.IdentityProofType.Did ||
-          issuer.identityProof?.type === v2.IdentityProofType.DNSDid) &&
-        (issuer.revocation?.type === v2.RevocationType.RevocationStore ||
-          issuer.revocation?.type === v2.RevocationType.OcspResponder);
-      const isDocumentStoreRevokableV2 = !!issuer.certificateStore || !!issuer.documentStore;
+    return isDocumentStoreRevokableV2 || isDidRevokableV2;
+  } else if (isWrappedV3Document(document)) {
+    const isDidRevokableV3 =
+      (document.openAttestationMetadata.proof.method === (v3.IdentityProofType.Did as string) ||
+        document.openAttestationMetadata.proof.method === (v3.IdentityProofType.DNSDid as string)) &&
+      document.openAttestationMetadata.proof.revocation?.type === v3.RevocationType.RevocationStore;
+    const isDocumentStoreRevokableV3 =
+      document.openAttestationMetadata.proof.method === v3.Method.DocumentStore &&
+      !!document.openAttestationMetadata.proof.value;
 
-      return isDocumentStoreRevokableV2 || isDidRevokableV2;
+    return isDocumentStoreRevokableV3 || isDidRevokableV3;
+  } else if (isWrappedOAV4Document(document)) {
+    const isDidRevokableV4 =
+      document.issuer.identityProof.identityProofType === OAv4.IdentityProofType.DNSDid
+        ? document.credentialStatus.credentialStatusType === OAv4.CredentialStatusType.OcspResponder ||
+          document.credentialStatus.credentialStatusType === OAv4.CredentialStatusType.RevocationStore
+        : false;
+    // TODO: OA v4 issuer schema not updated to support document store issuance yet
+    // const isDocumentStoreRevokableV4 = ?
 
-    case isWrappedV3Document(document):
-      const isDidRevokableV3 =
-        (document.openAttestationMetadata.identityProof.type === v3.IdentityProofType.Did ||
-          document.openAttestationMetadata.identityProof.type === v3.IdentityProofType.DNSDid) &&
-        document.openAttestationMetadata.proof.revocation?.type === v3.RevocationType.RevocationStore;
-      const isDocumentStoreRevokableV3 =
-        document.openAttestationMetadata.proof.method === v3.Method.DocumentStore &&
-        !!document.openAttestationMetadata.proof.value;
+    return isDidRevokableV4;
+  } else if (isWrappedTTV4Document(document)) {
+    const isDidRevokableV4 =
+      document.issuer.identityProof.identityProofType === TTv4.IdentityProofType.DNSDid
+        ? document.credentialStatus.credentialStatusType === TTv4.CredentialStatusType.OcspResponder ||
+          document.credentialStatus.credentialStatusType === TTv4.CredentialStatusType.RevocationStore
+        : false;
+    // TODO: TT v4 issuer schema not updated to support document store issuance yet
+    // const isDocumentStoreRevokableV4 = ?
 
-      return isDocumentStoreRevokableV3 || isDidRevokableV3;
-
-    default:
-      return false;
+    return isDidRevokableV4;
   }
+
+  return false;
 };
 
 export const getAssetId = (document: any): string => {
@@ -202,14 +246,20 @@ export const isSchemaValidationError = (error: any): error is SchemaValidationEr
 export { keccak256 } from "js-sha3";
 
 export const isObfuscated = (
-  document: WrappedDocumentV3<OpenAttestationDocumentV3> | WrappedDocumentV2<OpenAttestationDocumentV2>,
+  document:
+    | WrappedDocumentV2<OpenAttestationDocumentV2>
+    | WrappedDocumentV3<OpenAttestationDocumentV3>
+    | OAWrappedDocumentV4<OpenAttestationDocumentV4>
+    | TTWrappedDocumentV4<TradeTrustDocumentV4>,
 ): boolean => {
-  if (isWrappedV3Document(document)) {
-    return !!document.proof.privacy?.obfuscated?.length;
-  }
-
   if (isWrappedV2Document(document)) {
     return !!document.privacy?.obfuscatedData?.length;
+  } else if (isWrappedV3Document(document)) {
+    return !!document.proof.privacy.obfuscated.length;
+  } else if (isWrappedOAV4Document(document)) {
+    return !!document.proof.privacy.obfuscated.length;
+  } else if (isWrappedTTV4Document(document)) {
+    return !!document.proof.privacy.obfuscated.length;
   }
 
   throw new Error(
@@ -218,17 +268,26 @@ export const isObfuscated = (
 };
 
 export const getObfuscatedData = (
-  document: WrappedDocumentV3<OpenAttestationDocumentV3> | WrappedDocumentV2<OpenAttestationDocumentV2>,
+  document:
+    | WrappedDocumentV2<OpenAttestationDocumentV2>
+    | WrappedDocumentV3<OpenAttestationDocumentV3>
+    | OAWrappedDocumentV4<OpenAttestationDocumentV4>
+    | TTWrappedDocumentV4<TradeTrustDocumentV4>,
 ): string[] => {
-  if (isWrappedV3Document(document)) {
-    return document.proof.privacy?.obfuscated;
-  }
-
   if (isWrappedV2Document(document)) {
     return document.privacy?.obfuscatedData || [];
+  } else if (isWrappedV3Document(document)) {
+    return document.proof.privacy.obfuscated || [];
+  } else if (isWrappedOAV4Document(document)) {
+    return document.proof.privacy.obfuscated || [];
+  } else if (isWrappedTTV4Document(document)) {
+    return document.proof.privacy.obfuscated || [];
   }
 
   throw new Error(
     "Unsupported document type: Can only retrieve obfuscated data from wrapped OpenAttestation v2 & v3 documents.",
   );
 };
+
+export const isStringArray = (input: unknown): input is string[] =>
+  Array.isArray(input) && input.every((i) => typeof i === "string");
