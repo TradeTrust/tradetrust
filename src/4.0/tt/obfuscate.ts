@@ -39,7 +39,7 @@ const obfuscate = (_data: WrappedDocument<TradeTrustDocument>, fields: string[] 
 
 export const obfuscateVerifiableCredential = (
   document: WrappedDocument<TradeTrustDocument>,
-  fields: string[] | string
+  fields: string[] | string,
 ): WrappedDocument<TradeTrustDocument> => {
   const { data, obfuscatedData } = obfuscate(document, fields);
   const currentObfuscatedData = document.proof.privacy.obfuscated;

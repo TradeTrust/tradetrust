@@ -46,7 +46,7 @@ export const isRawV3Document = (
  */
 export const isRawOAV4Document = (
   document: any,
-  { mode }: { mode: Mode } = { mode: "non-strict" }
+  { mode }: { mode: Mode } = { mode: "non-strict" },
 ): document is OpenAttestationDocumentV4 => {
   const debug = false;
   if (!document.type) {
@@ -56,7 +56,7 @@ export const isRawOAV4Document = (
   if (typeof document.type === "string") {
     handleError(
       debug,
-      "A raw open-attestation credential needs to have a VerifiableCredential and OpenAttestationCredential in an array"
+      "A raw open-attestation credential needs to have a VerifiableCredential and OpenAttestationCredential in an array",
     );
     return false;
   }
@@ -74,7 +74,7 @@ export const isRawOAV4Document = (
  */
 export const isRawTTV4Document = (
   document: any,
-  { mode }: { mode: Mode } = { mode: "non-strict" }
+  { mode }: { mode: Mode } = { mode: "non-strict" },
 ): document is TradeTrustDocumentV4 => {
   const debug = false;
   if (!document.type) {
@@ -84,7 +84,7 @@ export const isRawTTV4Document = (
   if (typeof document.type === "string") {
     handleError(
       debug,
-      "A raw tradetrust credential needs to have a VerifiableCredential and TradeTrustCredential in an array"
+      "A raw tradetrust credential needs to have a VerifiableCredential and TradeTrustCredential in an array",
     );
     return false;
   }
@@ -114,7 +114,7 @@ export const isWrappedV2Document = (
  */
 export const isWrappedV3Document = (
   document: any,
-  { mode }: { mode: Mode } = { mode: "non-strict" }
+  { mode }: { mode: Mode } = { mode: "non-strict" },
 ): document is WrappedDocumentV3<OpenAttestationDocumentV3> => {
   return diagnose({ version: "3.0", kind: "wrapped", document, debug: false, mode }).length === 0;
 };
@@ -126,7 +126,7 @@ export const isWrappedV3Document = (
  */
 export const isWrappedOAV4Document = (
   document: any,
-  { mode }: { mode: Mode } = { mode: "non-strict" }
+  { mode }: { mode: Mode } = { mode: "non-strict" },
 ): document is OAWrappedDocumentV4<OpenAttestationDocumentV4> => {
   return diagnose({ version: "oa_4.0", kind: "wrapped", document, debug: false, mode }).length === 0;
 };
@@ -137,7 +137,7 @@ export const isWrappedOAV4Document = (
  */
 export const isWrappedTTV4Document = (
   document: any,
-  { mode }: { mode: Mode } = { mode: "non-strict" }
+  { mode }: { mode: Mode } = { mode: "non-strict" },
 ): document is TTWrappedDocumentV4<TradeTrustDocumentV4> => {
   return diagnose({ version: "tt_4.0", kind: "wrapped", document, debug: false, mode }).length === 0;
 };
@@ -173,7 +173,7 @@ export const isSignedWrappedV3Document = (
  */
 export const isSignedWrappedOAV4Document = (
   document: any,
-  { mode }: { mode: Mode } = { mode: "non-strict" }
+  { mode }: { mode: Mode } = { mode: "non-strict" },
 ): document is SignedWrappedDocument<OpenAttestationDocumentV4> => {
   return diagnose({ version: "oa_4.0", kind: "signed", document, debug: false, mode }).length === 0;
 };
@@ -185,7 +185,7 @@ export const isSignedWrappedOAV4Document = (
  */
 export const isSignedWrappedTTV4Document = (
   document: any,
-  { mode }: { mode: Mode } = { mode: "non-strict" }
+  { mode }: { mode: Mode } = { mode: "non-strict" },
 ): document is SignedWrappedDocument<TradeTrustDocumentV4> => {
   return diagnose({ version: "tt_4.0", kind: "signed", document, debug: false, mode }).length === 0;
 };

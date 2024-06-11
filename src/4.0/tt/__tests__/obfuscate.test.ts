@@ -95,13 +95,13 @@ const findSaltByPath = (salts: string, path: string): Salt | undefined => {
 const expectRemovedFieldsWithoutArrayNotation = (
   field: string,
   document: WrappedDocument,
-  obfuscatedDocument: WrappedDocument
+  obfuscatedDocument: WrappedDocument,
 ) => {
   const value = get(document, field);
   const salt = findSaltByPath(document.proof.salts, field);
 
   expect(obfuscatedDocument.proof.privacy.obfuscated).toContain(
-    toBuffer({ [field]: `${salt?.value}:${value}` }).toString("hex")
+    toBuffer({ [field]: `${salt?.value}:${value}` }).toString("hex"),
   );
   expect(findSaltByPath(obfuscatedDocument.proof.salts, field)).toBeUndefined();
   expect(obfuscatedDocument).not.toHaveProperty(field);
@@ -145,7 +145,7 @@ describe("privacy", () => {
       const salt = findSaltByPath(newDocument.proof.salts, field);
 
       expect(obfuscatedDocument.proof.privacy.obfuscated).toContain(
-        toBuffer({ [field]: `${salt?.value}:${value}` }).toString("hex")
+        toBuffer({ [field]: `${salt?.value}:${value}` }).toString("hex"),
       );
       expect(findSaltByPath(obfuscatedDocument.proof.salts, field)).toBeUndefined();
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -170,7 +170,7 @@ describe("privacy", () => {
         const salt = findSaltByPath(newDocument.proof.salts, field);
 
         expect(obfuscatedDocument.proof.privacy.obfuscated).toContain(
-          toBuffer({ [field]: `${salt?.value}:${value}` }).toString("hex")
+          toBuffer({ [field]: `${salt?.value}:${value}` }).toString("hex"),
         );
         expect(findSaltByPath(obfuscatedDocument.proof.salts, field)).toBeUndefined();
       });
@@ -203,7 +203,7 @@ describe("privacy", () => {
         const salt = findSaltByPath(newDocument.proof.salts, field);
 
         expect(obfuscatedDocument.proof.privacy.obfuscated).toContain(
-          toBuffer({ [field]: `${salt?.value}:${value}` }).toString("hex")
+          toBuffer({ [field]: `${salt?.value}:${value}` }).toString("hex"),
         );
         expect(findSaltByPath(obfuscatedDocument.proof.salts, field)).toBeUndefined();
       });

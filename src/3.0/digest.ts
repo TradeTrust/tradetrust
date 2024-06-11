@@ -6,7 +6,7 @@ import { OpenAttestationDocument } from "../__generated__/schema.3.0";
 export const digestCredential = (
   document: Omit<OpenAttestationDocument, "proof">,
   salts: Salt[],
-  obfuscatedData: string[]
+  obfuscatedData: string[],
 ) => {
   // Prepare array of hashes from visible data
   const hashedUnhashedDataArray = salts

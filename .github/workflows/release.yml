@@ -31,8 +31,12 @@ jobs:
           node-version: 18.x
       - run: npm ci && npm run postinstall
       - run: npm run build
-      - name: Release
+      - uses: codfish/semantic-release-action@v2
+        id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
+      - name: Output new release version
+        if: steps.semantic.outputs.new-release-published == 'true'
+        run: |
+          echo "🎉 New Release Published: ${{ steps.semantic.outputs.release-version }}"

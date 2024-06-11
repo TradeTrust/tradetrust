@@ -36,7 +36,7 @@ describe("4.0 ETR E2E Test Scenarios", () => {
     const signedDocument = await signDocument(
       wrappedDocument,
       SUPPORTED_SIGNING_ALGORITHM.Secp256k1VerificationKey2018,
-      wallet
+      wallet,
     );
 
     const { proof } = signedDocument;
@@ -47,7 +47,7 @@ describe("4.0 ETR E2E Test Scenarios", () => {
     expect(Object.keys(proof).length).toBe(9);
     expect(proof.key).toBe("did:ethr:0xE712878f6E8d5d4F9e87E10DA604F9cB564C9a89#controller");
     expect(proof.signature).toBe(
-      "0x4da35f7bd52dcdfccc3e534e4cf8c60808d450859cdc50c17cfad5f0d02a3019074468fa956af7ef3e17bea0d61ca781a3662aee1786cc226ce73321a9c1fa2e1c"
+      "0x4da35f7bd52dcdfccc3e534e4cf8c60808d450859cdc50c17cfad5f0d02a3019074468fa956af7ef3e17bea0d61ca781a3662aee1786cc226ce73321a9c1fa2e1c",
     );
   });
 });

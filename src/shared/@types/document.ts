@@ -30,21 +30,21 @@ export type OpenAttestationDocument =
 export type WrappedDocument<T extends OpenAttestationDocument> = T extends OpenAttestationDocumentV2
   ? WrappedDocumentV2<T>
   : T extends OpenAttestationDocumentV3
-  ? WrappedDocumentV3<T>
-  : T extends OpenAttestationDocumentV4
-  ? OAWrappedDocumentV4<T>
-  : T extends TradeTrustDocumentV4
-  ? TTWrappedDocumentV4<T>
-  : unknown;
+    ? WrappedDocumentV3<T>
+    : T extends OpenAttestationDocumentV4
+      ? OAWrappedDocumentV4<T>
+      : T extends TradeTrustDocumentV4
+        ? TTWrappedDocumentV4<T>
+        : unknown;
 export type SignedWrappedDocument<T extends OpenAttestationDocument> = T extends OpenAttestationDocumentV2
   ? SignedWrappedDocumentV2<T>
   : T extends OpenAttestationDocumentV3
-  ? SignedWrappedDocumentV3<T>
-  : T extends OpenAttestationDocumentV4
-  ? OASignedWrappedDocumentV4<T>
-  : T extends TradeTrustDocumentV4
-  ? TTSignedWrappedDocumentV4<T>
-  : unknown;
+    ? SignedWrappedDocumentV3<T>
+    : T extends OpenAttestationDocumentV4
+      ? OASignedWrappedDocumentV4<T>
+      : T extends TradeTrustDocumentV4
+        ? TTSignedWrappedDocumentV4<T>
+        : unknown;
 
 export enum SchemaId {
   v2 = "https://schema.openattestation.com/2.0/schema.json",
@@ -64,7 +64,7 @@ export const OpenAttestationHexString = String.withConstraint(
   (value) => ethers.utils.isHexString(`0x${value}`, 32) || `${value} has not the expected length of 32 bytes`,
 );
 export const TradeTrustHexString = String.withConstraint(
-  (value) => ethers.utils.isHexString(`0x${value}`, 32) || `${value} has not the expected length of 32 bytes`
+  (value) => ethers.utils.isHexString(`0x${value}`, 32) || `${value} has not the expected length of 32 bytes`,
 );
 
 export const SignatureAlgorithm = Literal("OpenAttestationMerkleProofSignature2018");

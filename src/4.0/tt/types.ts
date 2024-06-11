@@ -32,7 +32,7 @@ export const WrappedProofStrict = WrappedProof.And(
     targetHash: TradeTrustHexString,
     merkleRoot: TradeTrustHexString,
     proofs: Array(TradeTrustHexString),
-  })
+  }),
 );
 export type WrappedProofStrict = Static<typeof WrappedProofStrict>;
 
@@ -40,7 +40,7 @@ export const SignedWrappedProof = WrappedProof.And(
   Record({
     key: String,
     signature: String,
-  })
+  }),
 );
 export type SignedWrappedProof = Static<typeof SignedWrappedProof>;
 

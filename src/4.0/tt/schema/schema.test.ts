@@ -1,4 +1,4 @@
-/* eslint-disable jest/no-try-expect,jest/no-conditional-expect */
+/* eslint-disable jest/no-conditional-expect */
 import { cloneDeep } from "lodash";
 import { _unsafe_use_it_at_your_own_risk_v4_alpha_tt_wrapDocument as wrapDocumentV4 } from "../../../index";
 import sample from "../../../../test/fixtures/v4/tt/did-raw.json";

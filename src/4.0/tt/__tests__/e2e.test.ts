@@ -89,7 +89,7 @@ describe("4.0 E2E Test Scenarios", () => {
       await expect(
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        wrapDocument(missingData)
+        wrapDocument(missingData),
       ).rejects.toThrow("Invalid document");
     });
     test("creates a wrapped document", async () => {
@@ -113,7 +113,7 @@ describe("4.0 E2E Test Scenarios", () => {
       expect(wrappedDocumentWithDnsDID.proof.merkleRoot).toBe(wrappedDocumentWithDnsDID.proof.targetHash);
       expect(wrappedDocumentWithDnsDID.issuer.identityProof.identityProofType).toContain(IdentityProofType.DNSDid);
       expect(wrappedDocumentWithDnsDID.issuer.identityProof.identifier).toContain(
-        documentDid.issuer.identityProof.identifier
+        documentDid.issuer.identityProof.identifier,
       );
     });
     test("checks that document is wrapped correctly", async () => {
@@ -183,7 +183,7 @@ describe("4.0 E2E Test Scenarios", () => {
             targetHash: "0xabc",
             type: "SHA3MerkleProof",
           },
-        })
+        }),
       ).toStrictEqual(true);
     });
   });

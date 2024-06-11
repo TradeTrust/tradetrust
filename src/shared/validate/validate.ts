@@ -20,7 +20,7 @@ export const validateSchema = (document: any, validator: ValidateFunction, kind?
       document.version === SchemaId.v3 ||
       kind === "raw"
       ? document
-      : getData(document)
+      : getData(document),
   );
 
   if (!valid) {

@@ -6,7 +6,7 @@ import { TradeTrustDocument } from "../../__generated__/tt-schema.4.0";
 export const digestCredential = (
   document: Omit<TradeTrustDocument, "proof">,
   salts: Salt[],
-  obfuscatedData: string[]
+  obfuscatedData: string[],
 ) => {
   // Prepare array of hashes from visible data
   const hashedUnhashedDataArray = salts

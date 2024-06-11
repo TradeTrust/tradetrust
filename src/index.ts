@@ -59,42 +59,42 @@ export function wrapDocuments<T extends OpenAttestationDocumentV2>(
 
 export function __unsafe__use__it__at__your__own__risks__wrapDocument<T extends OpenAttestationDocumentV3>(
   data: T,
-  options?: WrapDocumentOptionV3
+  options?: WrapDocumentOptionV3,
 ): Promise<WrappedDocumentV3<T>> {
   return wrapDocumentV3(data, options ?? { version: SchemaId.v3 });
 }
 
 export function __unsafe__use__it__at__your__own__risks__wrapDocuments<T extends OpenAttestationDocumentV3>(
   dataArray: T[],
-  options?: WrapDocumentOptionV3
+  options?: WrapDocumentOptionV3,
 ): Promise<WrappedDocumentV3<T>[]> {
   return wrapDocumentsV3(dataArray, options ?? { version: SchemaId.v3 });
 }
 
 export function _unsafe_use_it_at_your_own_risk_v4_alpha_oa_wrapDocument<T extends OpenAttestationDocumentV4>(
   data: T,
-  options?: WrapDocumentOptionV4
+  options?: WrapDocumentOptionV4,
 ): Promise<OAWrappedDocumentV4<T>> {
   return OAwrapDocumentV4(data, options ?? { version: SchemaId.oa_v4 });
 }
 
 export function _unsafe_use_it_at_your_own_risk_v4_alpha_tt_wrapDocument<T extends TradeTrustDocumentV4>(
   data: T,
-  options?: WrapDocumentOptionV4
+  options?: WrapDocumentOptionV4,
 ): Promise<TTWrappedDocumentV4<T>> {
   return TTwrapDocumentV4(data, options ?? { version: SchemaId.tt_v4 });
 }
 
 export function _unsafe_use_it_at_your_own_risk_v4_alpha_oa_wrapDocuments<T extends OpenAttestationDocumentV4>(
   dataArray: T[],
-  options?: WrapDocumentOptionV4
+  options?: WrapDocumentOptionV4,
 ): Promise<OAWrappedDocumentV4<T>[]> {
   return OAwrapDocumentsV4(dataArray, options ?? { version: SchemaId.oa_v4 });
 }
 
 export function _unsafe_use_it_at_your_own_risk_v4_alpha_tt_wrapDocuments<T extends TradeTrustDocumentV4>(
   dataArray: T[],
-  options?: WrapDocumentOptionV4
+  options?: WrapDocumentOptionV4,
 ): Promise<TTWrappedDocumentV4<T>[]> {
   return TTwrapDocumentsV4(dataArray, options ?? { version: SchemaId.tt_v4 });
 }
@@ -127,14 +127,14 @@ export function digest(document: TradeTrustDocumentV4, salts: TTv4.Salt[], obfus
 export function digest(
   document: OpenAttestationDocumentV3 | TradeTrustDocumentV4,
   salts: v3.Salt[] | TTv4.Salt[],
-  obfuscatedData: string[]
+  obfuscatedData: string[],
 ): string {
   if (utils.isRawV3Document(document)) return digestCredentialV3(document, salts, obfuscatedData);
   else if (utils.isRawTTV4Document(document)) return TTdigestCredentialV4(document, salts, obfuscatedData);
   else if (utils.isRawOAV4Document(document)) return OAdigestCredentialV4(document, salts, obfuscatedData);
 
   throw new Error(
-    "Unsupported credential type: This function only supports digest generation for OpenAttestation v3 or v4 credentials"
+    "Unsupported credential type: This function only supports digest generation for OpenAttestation v3 or v4 credentials",
   );
 }
 
@@ -148,11 +148,11 @@ export function obfuscate<T extends OpenAttestationDocumentV3>(
 ): WrappedDocument<T>;
 export function obfuscate<T extends OpenAttestationDocumentV4>(
   document: WrappedDocument<T>,
-  fields: string[] | string
+  fields: string[] | string,
 ): WrappedDocument<T>;
 export function obfuscate<T extends TradeTrustDocumentV4>(
   document: WrappedDocument<T>,
-  fields: string[] | string
+  fields: string[] | string,
 ): WrappedDocument<T>;
 export function obfuscate<T extends OpenAttestationDocument>(document: WrappedDocument<T>, fields: string[] | string) {
   if (utils.isWrappedV2Document(document)) return obfuscateDocumentV2(document, fields);
@@ -175,17 +175,17 @@ export async function signDocument<T extends v2.OpenAttestationDocument>(
 export async function signDocument<T extends v3.OpenAttestationDocument>(
   document: v3.SignedWrappedDocument<T> | v3.WrappedDocument<T>,
   algorithm: SUPPORTED_SIGNING_ALGORITHM,
-  keyOrSigner: SigningKey | ethers.Signer
+  keyOrSigner: SigningKey | ethers.Signer,
 ): Promise<v3.SignedWrappedDocument<T>>;
 export async function signDocument<T extends OAv4.OpenAttestationDocument>(
   document: OAv4.SignedWrappedDocument<T> | OAv4.WrappedDocument<T>,
   algorithm: SUPPORTED_SIGNING_ALGORITHM,
-  keyOrSigner: SigningKey | ethers.Signer
+  keyOrSigner: SigningKey | ethers.Signer,
 ): Promise<OAv4.SignedWrappedDocument<T>>;
 export async function signDocument<T extends TTv4.TradeTrustDocument>(
   document: TTv4.SignedWrappedDocument<T> | TTv4.WrappedDocument<T>,
   algorithm: SUPPORTED_SIGNING_ALGORITHM,
-  keyOrSigner: SigningKey | ethers.Signer
+  keyOrSigner: SigningKey | ethers.Signer,
 ): Promise<TTv4.SignedWrappedDocument<T>>;
 export async function signDocument(
   document: any,

@@ -12,7 +12,7 @@ import { getSchema } from "../../shared/ajv";
 
 export const wrapDocument = async <T extends TradeTrustDocument>(
   credential: T,
-  options: WrapDocumentOptionV4 // eslint-disable-line @typescript-eslint/no-unused-vars
+  options: WrapDocumentOptionV4, // eslint-disable-line @typescript-eslint/no-unused-vars
 ): Promise<WrappedDocument<T>> => {
   const document = { ...credential };
 
@@ -77,14 +77,14 @@ export const wrapDocument = async <T extends TradeTrustDocument>(
 
 export const wrapDocuments = async <T extends TradeTrustDocument>(
   documents: T[],
-  options: WrapDocumentOptionV4
+  options: WrapDocumentOptionV4,
 ): Promise<WrappedDocument<T>[]> => {
   // create individual verifiable credential
   const verifiableCredentials = await Promise.all(documents.map((document) => wrapDocument(document, options)));
 
   // get all the target hashes to compute the merkle tree and the merkle root
   const merkleTree = new MerkleTree(
-    verifiableCredentials.map((verifiableCredential) => verifiableCredential.proof.targetHash).map(hashToBuffer)
+    verifiableCredentials.map((verifiableCredential) => verifiableCredential.proof.targetHash).map(hashToBuffer),
   );
   const merkleRoot = merkleTree.getRoot().toString("hex");
 

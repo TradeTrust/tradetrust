@@ -112,7 +112,7 @@ export const getMerkleRoot = (document: any): string => {
   else if (isWrappedTTV4Document(document)) return document.proof.merkleRoot;
 
   throw new Error(
-    "Unsupported document type: Only can retrieve merkle root from wrapped OpenAttestation v2, v3 & v4 documents."
+    "Unsupported document type: Only can retrieve merkle root from wrapped OpenAttestation v2, v3 & v4 documents.",
   );
 };
 
@@ -123,7 +123,7 @@ export const getTargetHash = (document: any): string => {
   else if (isWrappedTTV4Document(document)) return document.proof.targetHash;
 
   throw new Error(
-    "Unsupported document type: Only can retrieve target hash from wrapped OpenAttestation v2, v3 & v4 documents."
+    "Unsupported document type: Only can retrieve target hash from wrapped OpenAttestation v2, v3 & v4 documents.",
   );
 };
 
@@ -145,7 +145,7 @@ export const getTemplateURL = (document: any): string | undefined => {
   }
 
   throw new Error(
-    "Unsupported document type: Only can retrieve template url from OpenAttestation v2, v3 & v4 documents."
+    "Unsupported document type: Only can retrieve template url from OpenAttestation v2, v3 & v4 documents.",
   );
 };
 
@@ -159,7 +159,7 @@ export const getDocumentData = (document: WrappedDocument<OpenAttestationDocumen
   }
 
   throw new Error(
-    "Unsupported document type: Only can retrieve document data for wrapped OpenAttestation v2, v3 & v4 documents."
+    "Unsupported document type: Only can retrieve document data for wrapped OpenAttestation v2, v3 & v4 documents.",
   );
 };
 
@@ -250,7 +250,7 @@ export const isObfuscated = (
     | WrappedDocumentV2<OpenAttestationDocumentV2>
     | WrappedDocumentV3<OpenAttestationDocumentV3>
     | OAWrappedDocumentV4<OpenAttestationDocumentV4>
-    | TTWrappedDocumentV4<TradeTrustDocumentV4>
+    | TTWrappedDocumentV4<TradeTrustDocumentV4>,
 ): boolean => {
   if (isWrappedV2Document(document)) {
     return !!document.privacy?.obfuscatedData?.length;
@@ -272,7 +272,7 @@ export const getObfuscatedData = (
     | WrappedDocumentV2<OpenAttestationDocumentV2>
     | WrappedDocumentV3<OpenAttestationDocumentV3>
     | OAWrappedDocumentV4<OpenAttestationDocumentV4>
-    | TTWrappedDocumentV4<TradeTrustDocumentV4>
+    | TTWrappedDocumentV4<TradeTrustDocumentV4>,
 ): string[] => {
   if (isWrappedV2Document(document)) {
     return document.privacy?.obfuscatedData || [];

@@ -2,8 +2,6 @@ import { OpenAttestationDocument } from "../../__generated__/schema.3.0";
 import { WrappedDocument } from "../../3.0/types";
 import { documentLoaders, expand } from "@govtechsg/jsonld";
 import fetch from "cross-fetch";
-import w3cContextExamples from "../../shared/contexts/w3c-context-examples.json";
-import w3cDataModel from "../../shared/contexts/w3c-data-model-v1.json";
 
 const getId = (objectOrString: string | { id: string }): string => {
   if (typeof objectOrString === "string") {
