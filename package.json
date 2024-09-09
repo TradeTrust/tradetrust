@@ -59,7 +59,7 @@
     "jest-watch-typeahead": "^2.2.2",
     "prettier": "^3.2.5",
     "qrcode": "^1.5.3",
-    "quicktype": "^23.0.105",
+    "quicktype": "^23.0.170",
     "rollup": "^4.12.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "semantic-release": "^21.1.2",
