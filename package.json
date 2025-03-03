@@ -73,7 +73,7 @@
     "ajv-formats": "^2.1.1",
     "cross-fetch": "^4.0.0",
     "debug": "^4.3.4",
-    "ethers": "^5.7.2",
+    "ethers": "^5.8.0",
     "flatley": "^5.2.0",
     "js-base64": "^3.7.7",
     "js-sha3": "^0.9.3",
