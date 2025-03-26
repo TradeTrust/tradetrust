@@ -89,6 +89,19 @@ const _W3cVerifiableCredential = z.object({
     .passthrough()
     .optional(),
 
+  confidenceMethod: z.array(z.any()).optional(),
+
+  renderMethod: z
+    .array(
+      z
+        .object({
+          id: Uri.optional(),
+          type: z.string(),
+        })
+        .passthrough()
+    )
+    .optional(),
+
   termsOfUse: z
     .union([
       // If object: Must have type defined. If id is present, id must match uri pattern (termsOfUse.id is optional and can be undefined)
