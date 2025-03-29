@@ -6,6 +6,7 @@ import {
   ProoflessW3cVerifiableCredential,
 } from "../types";
 import { digestVc } from "../digest";
+import { RAW_W3C_VC_TRADETRUST_STATUS_LIST, RAW_W3C_VC_TRADETRUST_TRANSFERABLE_RECORDS } from "../fixtures";
 
 describe("V4.0 digest", () => {
   test("given a valid v4 VC, should digest correctly", async () => {
@@ -139,64 +140,10 @@ describe("V4.0 digest", () => {
   });
 
   test("given a generic W3C VC and with validate with OA data model disabled, should digest with context and type corrected - TradeTrust - Token Registry", async () => {
-    const genericW3cVc: W3cVerifiableCredential = {
-      "@context": [
-        "https://www.w3.org/ns/credentials/v2",
-        "https://w3id.org/security/bbs/v1",
-        "https://w3id.org/vc/status-list/2021/v1",
-        "https://trustvc.io/context/transferable-records-context.json",
-        "https://trustvc.io/context/attachments-context.json",
-        "https://trustvc.io/context/bill-of-lading.json",
-      ],
-      credentialStatus: {
-        type: "TransferableRecords",
-        tokenNetwork: {
-          chain: "MATIC",
-          chainId: "80001",
-        },
-        tokenRegistry: "0xE0a94770B8e969B5D9179d6dA8730B01e19279e2",
-        tokenId: "398124e7f1ec797a3dea6322e5ce4ff5ee242ab6293c2acf41a95178dfb27dae",
-      },
-      id: "urn:uuid:0192d19c-d82c-7cc7-9431-cb495374f43b",
-      credentialSubject: {
-        billOfLadingName: "TrustVC Bill of Lading",
-        scac: "SGPU",
-        blNumber: "SGCNM21566325",
-        vessel: "vessel",
-        voyageNo: "voyageNo",
-        portOfLoading: "Singapore",
-        portOfDischarge: "Paris",
-        carrierName: "A.P. Moller",
-        placeOfReceipt: "Beijing",
-        placeOfDelivery: "Singapore",
-        packages: [
-          { packagesDescription: "package 1", packagesWeight: "10", packagesMeasurement: "20" },
-          { packagesDescription: "package 2", packagesWeight: "10", packagesMeasurement: "20" },
-        ],
-        shipperName: "Shipper Name",
-        shipperAddressStreet: "101 ORCHARD ROAD",
-        shipperAddressCountry: "SINGAPORE",
-        consigneeName: "Consignee name",
-        notifyPartyName: "Notify Party Name",
-        links: "https://localhost:3000/url",
-        attachments: [
-          { data: "BASE64_ENCODED_FILE", filename: "sample1.pdf", mimeType: "application/pdf" },
-          { data: "BASE64_ENCODED_FILE", filename: "sample2.pdf", mimeType: "application/pdf" },
-        ],
-        type: ["BillOfLading"],
-      },
-      renderMethod: [
-        {
-          id: "https://localhost:3000/renderer",
-          type: "EMBEDDED_RENDERER",
-          templateName: "BILL_OF_LADING",
-        },
-      ],
-      issuer: "did:web:trustvc.github.io:did:1",
-      type: ["VerifiableCredential"],
-    };
-
-    const digested = await digestVc(genericW3cVc as unknown as ProoflessW3cVerifiableCredential, true);
+    const digested = await digestVc(
+      RAW_W3C_VC_TRADETRUST_TRANSFERABLE_RECORDS as unknown as ProoflessW3cVerifiableCredential,
+      true
+    );
     const parsedResults = OADigestedOAVerifiableCredential.pick({ "@context": true, type: true })
       .passthrough()
       .safeParse(digested);
@@ -211,62 +158,10 @@ describe("V4.0 digest", () => {
   }, 30_000);
 
   test("given a generic W3C VC and with validate with OA data model disabled, should digest with context and type corrected - TradeTrust - Status List", async () => {
-    const genericW3cVc: W3cVerifiableCredential = {
-      "@context": [
-        "https://www.w3.org/ns/credentials/v2",
-        "https://w3id.org/security/bbs/v1",
-        "https://w3id.org/vc/status-list/2021/v1",
-        "https://trustvc.io/context/transferable-records-context.json",
-        "https://trustvc.io/context/attachments-context.json",
-        "https://trustvc.io/context/bill-of-lading.json",
-      ],
-      credentialStatus: {
-        id: "https://trustvc.github.io/did/credentials/statuslist/1#1",
-        statusListCredential: "https://trustvc.github.io/did/credentials/statuslist/1",
-        statusListIndex: "1",
-        statusPurpose: "revocation",
-        type: "StatusList2021Entry",
-      },
-      id: "urn:uuid:0192d19c-d82c-7cc7-9431-cb495374f43b",
-      credentialSubject: {
-        billOfLadingName: "TrustVC Bill of Lading",
-        scac: "SGPU",
-        blNumber: "SGCNM21566325",
-        vessel: "vessel",
-        voyageNo: "voyageNo",
-        portOfLoading: "Singapore",
-        portOfDischarge: "Paris",
-        carrierName: "A.P. Moller",
-        placeOfReceipt: "Beijing",
-        placeOfDelivery: "Singapore",
-        packages: [
-          { packagesDescription: "package 1", packagesWeight: "10", packagesMeasurement: "20" },
-          { packagesDescription: "package 2", packagesWeight: "10", packagesMeasurement: "20" },
-        ],
-        shipperName: "Shipper Name",
-        shipperAddressStreet: "101 ORCHARD ROAD",
-        shipperAddressCountry: "SINGAPORE",
-        consigneeName: "Consignee name",
-        notifyPartyName: "Notify Party Name",
-        links: "https://localhost:3000/url",
-        attachments: [
-          { data: "BASE64_ENCODED_FILE", filename: "sample1.pdf", mimeType: "application/pdf" },
-          { data: "BASE64_ENCODED_FILE", filename: "sample2.pdf", mimeType: "application/pdf" },
-        ],
-        type: ["BillOfLading"],
-      },
-      renderMethod: [
-        {
-          id: "https://localhost:3000/renderer",
-          type: "EMBEDDED_RENDERER",
-          templateName: "BILL_OF_LADING",
-        },
-      ],
-      issuer: "did:web:trustvc.github.io:did:1",
-      type: ["VerifiableCredential"],
-    };
-
-    const digested = await digestVc(genericW3cVc as unknown as ProoflessW3cVerifiableCredential, true);
+    const digested = await digestVc(
+      RAW_W3C_VC_TRADETRUST_STATUS_LIST as unknown as ProoflessW3cVerifiableCredential,
+      true
+    );
     const parsedResults = OADigestedOAVerifiableCredential.pick({ "@context": true, type: true })
       .passthrough()
       .safeParse(digested);
