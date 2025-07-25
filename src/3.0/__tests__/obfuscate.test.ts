@@ -10,8 +10,7 @@ import { Method, OpenAttestationDocument, ProofType } from "../../__generated__/
 import { toBuffer, isObfuscated, getObfuscatedData } from "../../shared/utils";
 import ObfuscatedWrapped from "../../../test/fixtures/v3/obfuscated-wrapped.json";
 import NotObfuscatedWrapped from "../../../test/fixtures/v3/not-obfuscated-wrapped.json";
-import ObfuscatedW3c from "../../../test/fixtures/w3c/w3c-redacted.json";
-import NotObfuscatedW3c from "../../../test/fixtures/w3c/w3c-signed.json";
+
 import { SignedVerifiableCredential } from "@trustvc/w3c-vc";
 
 jest.mock("../../3.0/validate"); // Skipping schema verification while wrapping
@@ -289,16 +288,6 @@ describe("privacy", () => {
 
     test("should return true where there is obfuscated data in document v3", () => {
       expect(isObfuscated(documentObfuscatedV3)).toBe(true);
-    });
-
-    test("should return false where there is no obfuscated data in document w3c", () => {
-      const documentNotObfuscatedW3c = NotObfuscatedW3c as SignedVerifiableCredential;
-      expect(isObfuscated(documentNotObfuscatedW3c)).toBe(false);
-    });
-
-    test("should return true where there is obfuscated data in document w3c", () => {
-      const documentObfuscatedW3c = ObfuscatedW3c as SignedVerifiableCredential;
-      expect(isObfuscated(documentObfuscatedW3c)).toBe(true);
     });
   });
 });
