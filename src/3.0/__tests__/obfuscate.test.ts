@@ -11,8 +11,6 @@ import { toBuffer, isObfuscated, getObfuscatedData } from "../../shared/utils";
 import ObfuscatedWrapped from "../../../test/fixtures/v3/obfuscated-wrapped.json";
 import NotObfuscatedWrapped from "../../../test/fixtures/v3/not-obfuscated-wrapped.json";
 
-import { SignedVerifiableCredential } from "@trustvc/w3c-vc";
-
 jest.mock("../../3.0/validate"); // Skipping schema verification while wrapping
 
 const openAttestationData: OpenAttestationDocument = {
