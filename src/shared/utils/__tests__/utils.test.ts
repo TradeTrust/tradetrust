@@ -12,6 +12,9 @@ import v3WrappedDidDocument from "../../../../test/fixtures/v3/did-wrapped.json"
 import v2WrappedDidDocumentOscpResponder from "../../../../test/fixtures/v2/did-signed-ocsp-responder.json";
 import v2WrappedTransferableDocument from "../../../../test/fixtures/v2/wrapped-transferable-document.json";
 import v3WrappedTransferableDocument from "../../../../test/fixtures/v3/wrapped-transferable-document.json";
+import ObfuscatedW3c from "../../../../test/fixtures/w3c/w3c-redacted.json";
+import NotObfuscatedW3c from "../../../../test/fixtures/w3c/w3c-signed.json";
+import { SignedVerifiableCredential } from "@trustvc/w3c-vc";
 
 describe("Util Functions", () => {
   describe("hashArray", () => {
@@ -453,6 +456,18 @@ describe("Util Functions", () => {
       expect(() => utils.getDocumentData(document)).toThrow(
         "Unsupported document type: Only can retrieve document data for wrapped OpenAttestation v2 & v3 documents.",
       );
+    });
+  });
+
+  describe("isObfuscated", () => {
+    test("should return false where there is no obfuscated data in document w3c", () => {
+      const documentNotObfuscatedW3c = NotObfuscatedW3c as SignedVerifiableCredential;
+      expect(utils.isObfuscated(documentNotObfuscatedW3c)).toBe(false);
+    });
+
+    test("should return true where there is obfuscated data in document w3c", () => {
+      const documentObfuscatedW3c = ObfuscatedW3c as SignedVerifiableCredential;
+      expect(utils.isObfuscated(documentObfuscatedW3c)).toBe(true);
     });
   });
 });

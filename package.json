@@ -69,6 +69,7 @@
   },
   "dependencies": {
     "@govtechsg/jsonld": "^0.1.1",
+    "@trustvc/w3c-vc": "^1.2.17",
     "ajv": "^8.12.0",
     "ajv-formats": "^2.1.1",
     "cross-fetch": "^4.0.0",
