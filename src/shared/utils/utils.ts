@@ -9,6 +9,7 @@ import { isRawV2Document, isRawV3Document, isWrappedV2Document, isWrappedV3Docum
 import { OpenAttestationDocument, WrappedDocument } from "../@types/document";
 import * as v2 from "../../__generated__/schema.2.0";
 import * as v3 from "../../__generated__/schema.3.0";
+import { isSignedDocument, SignedVerifiableCredential } from "@trustvc/w3c-vc";
 
 export type Hash = string | Buffer;
 type Extract<P> = P extends WrappedDocumentV2<infer T> ? T : never;
@@ -77,6 +78,7 @@ export function getIssuerAddress(document: any): any {
   } else if (isWrappedV3Document(document)) {
     return document.openAttestationMetadata.proof.value;
   }
+
   throw new Error(
     "Unsupported document type: Only can retrieve issuer address from wrapped OpenAttestation v2 & v3 documents.",
   );
@@ -202,7 +204,10 @@ export const isSchemaValidationError = (error: any): error is SchemaValidationEr
 export { keccak256 } from "js-sha3";
 
 export const isObfuscated = (
-  document: WrappedDocumentV3<OpenAttestationDocumentV3> | WrappedDocumentV2<OpenAttestationDocumentV2>,
+  document:
+    | WrappedDocumentV3<OpenAttestationDocumentV3>
+    | WrappedDocumentV2<OpenAttestationDocumentV2>
+    | SignedVerifiableCredential,
 ): boolean => {
   if (isWrappedV3Document(document)) {
     return !!document.proof.privacy?.obfuscated?.length;
@@ -212,8 +217,12 @@ export const isObfuscated = (
     return !!document.privacy?.obfuscatedData?.length;
   }
 
+  if (isSignedDocument(document)) {
+    return document.proof?.type === "BbsBlsSignatureProof2020";
+  }
+
   throw new Error(
-    "Unsupported document type: Can only check if there are obfuscated data from wrapped OpenAttestation v2 & v3 documents.",
+    "Unsupported document type: Can only check if there are obfuscated data from wrapped OpenAttestation v2, v3 documents and signed verifiable credentials.",
   );
 };
 
