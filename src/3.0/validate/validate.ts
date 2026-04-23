@@ -1,7 +1,9 @@
 import { OpenAttestationDocument } from "../../__generated__/schema.3.0";
 import { WrappedDocument } from "../../3.0/types";
 import { documentLoaders, expand } from "@govtechsg/jsonld";
-import fetch from "cross-fetch";
+import openAttestationV3Context from "./contexts/OpenAttestation.v3.json";
+import drivingLicenceCredentialContext from "./contexts/DrivingLicenceCredential.json";
+import customContext from "./contexts/CustomContext.json";
 
 const getId = (objectOrString: string | { id: string }): string => {
   if (typeof objectOrString === "string") {
@@ -39,33 +41,42 @@ const isValidRFC3986 = (str: any) => {
   return rfc3986.test(str);
 };
 
-const preloadedContextList = [
-  "https://www.w3.org/2018/credentials/v1",
-  "https://www.w3.org/2018/credentials/examples/v1",
-  "https://schemata.openattestation.com/com/openattestation/1.0/DrivingLicenceCredential.json",
-  "https://schemata.openattestation.com/com/openattestation/1.0/OpenAttestation.v3.json",
-  "https://schemata.openattestation.com/com/openattestation/1.0/CustomContext.json",
-];
+const openAttestationSchemataHosts = new Set(["schemata.openattestation.com", "www.schemata.openattestation.com"]);
+const hardcodedContextsByFilename: Record<string, unknown> = {
+  "OpenAttestation.v3.json": openAttestationV3Context,
+  "DrivingLicenceCredential.json": drivingLicenceCredentialContext,
+  "CustomContext.json": customContext,
+};
+
+export const resolveHardcodedContext = (url: string): unknown | undefined => {
+  try {
+    const parsed = new URL(url);
+    if (!openAttestationSchemataHosts.has(parsed.hostname)) return undefined;
+    const filename = parsed.pathname.split("/").pop();
+    return filename ? hardcodedContextsByFilename[filename] : undefined;
+  } catch {
+    return undefined;
+  }
+};
+
 const contexts: Map<string, Promise<any>> = new Map();
 const nodeDocumentLoader = documentLoaders.xhr ? documentLoaders.xhr() : documentLoaders.node();
-let preload = true;
 
-const documentLoader = async (url: string) => {
-  if (preload) {
-    preload = false;
-    for (const url of preloadedContextList) {
-      contexts.set(
-        url,
-        fetch(url, { headers: { accept: "application/json, application/ld+json" } }).then((res: any) => res.json()),
-      );
-    }
+export const documentLoader = async (url: string) => {
+  const hardcoded = resolveHardcodedContext(url);
+  if (hardcoded !== undefined) {
+    return {
+      contextUrl: undefined, // this is for a context via a link header
+      document: hardcoded, // served from the bundled local copy regardless of host/version in the URL
+      documentUrl: url, // this is the actual context URL after redirects
+    };
   }
   if (contexts.get(url)) {
     const promise = contexts.get(url);
     return {
-      contextUrl: undefined, // this is for a context via a link header
-      document: await promise, // this is the actual document that was loaded
-      documentUrl: url, // this is the actual context URL after redirects
+      contextUrl: undefined,
+      document: await promise,
+      documentUrl: url,
     };
   } else {
     const promise = nodeDocumentLoader(url);
